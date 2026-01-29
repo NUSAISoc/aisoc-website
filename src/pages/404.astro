@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Button } from "@/components/ui/button";
+---
+
+<BaseLayout title="404 Not Found">
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
+        <div class="text-[10rem] font-display font-bold leading-none text-destructive/20 select-none">404</div>
+
+        <div class="space-y-2 relative z-10 mt-[-4rem]">
+            <h1 class="text-4xl md:text-5xl font-display uppercase text-destructive tracking-tight">Route Not Found</h1>
+            <p class="text-muted-foreground font-mono max-w-md mx-auto">
+                The requested resource couldn't be found.
+            </p>
+        </div>
+
+        <div class="pt-8">
+            <Button
+                asChild
+                variant="outline"
+                className="font-mono uppercase border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
+            >
+                <a href="/"> Back to Origin </a>
+            </Button>
+        </div>
+    </div>
+</BaseLayout>

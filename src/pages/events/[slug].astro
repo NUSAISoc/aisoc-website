@@ -1,0 +1,185 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { format } from "date-fns";
+
+export async function getStaticPaths() {
+    const eventEntries = await getCollection("events");
+    return eventEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const dateObj = typeof entry.data.date === "string" ? new Date(entry.data.date) : entry.data.date;
+const isUpcoming = entry.data.status === "upcoming";
+---
+
+<BaseLayout title={entry.data.title}>
+    <div class="max-w-3xl mx-auto px-4 md:px-0 py-12">
+        <div class="mb-8">
+            <a
+                href="/events"
+                class="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-mono text-sm uppercase tracking-wide group"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="group-hover:-translate-x-1 transition-transform"
+                    ><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg
+                >
+                RETURN_TO_EVENTS
+            </a>
+        </div>
+
+        <article>
+            <!-- Header -->
+            <header class="space-y-6 mb-12 border-b border-border pb-8">
+                {
+                    isUpcoming && (
+                        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                            </span>
+                            UPCOMING
+                        </div>
+                    )
+                }
+
+                <h1
+                    class="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tighter uppercase leading-none"
+                >
+                    {entry.data.title}
+                </h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-mono text-muted-foreground pt-2">
+                    <div class="flex items-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="mr-2 h-4 w-4 text-primary"
+                            ><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line
+                                x1="16"
+                                x2="16"
+                                y1="2"
+                                y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line
+                                x1="3"
+                                x2="21"
+                                y1="10"
+                                y2="10"></line></svg
+                        >
+                        {format(dateObj, "EEEE, dd MMMM yyyy")}
+                    </div>
+                    <div class="flex items-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="mr-2 h-4 w-4 text-primary"
+                            ><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"
+                            ></polyline></svg
+                        >
+                        {entry.data.time} SGT
+                    </div>
+                    <div class="flex items-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="mr-2 h-4 w-4 text-primary"
+                            ><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle
+                                cx="12"
+                                cy="10"
+                                r="3"></circle></svg
+                        >
+                        {entry.data.location}
+                    </div>
+                </div>
+
+                {
+                    entry.data.image && (
+                        <div class="w-full aspect-video overflow-hidden border border-border mt-8">
+                            <img src={entry.data.image} alt={entry.data.title} class="w-full h-full object-cover" />
+                        </div>
+                    )
+                }
+            </header>
+
+            <!-- Content -->
+            <div
+                class="prose prose-invert prose-lg max-w-none
+                prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tight prose-headings:mt-8 prose-headings:mb-4
+                prose-p:leading-relaxed prose-p:text-foreground/90 prose-p:my-4
+                prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                prose-ul:my-4 prose-ol:my-4 prose-li:my-1"
+            >
+                {
+                    entry.data.description && (
+                        <div class="lead text-xl md:text-2xl text-muted-foreground mb-8 font-display border-l-4 border-primary pl-6 not-prose">
+                            {entry.data.description}
+                        </div>
+                    )
+                }
+
+                <Content />
+            </div>
+
+            <!-- Footer -->
+            <footer
+                class="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+            >
+                <div class="text-muted-foreground font-mono text-sm">END_OF_BRIEFING</div>
+
+                <div class="flex gap-4">
+                    {
+                        isUpcoming && entry.data.registrationUrl && (
+                            <a
+                                href={entry.data.registrationUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center justify-center h-11 px-6 py-2 font-mono font-bold tracking-wider uppercase bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
+                            >
+                                Register Now
+                            </a>
+                        )
+                    }
+                    <a
+                        href="/events"
+                        class="inline-flex items-center justify-center h-11 px-6 py-2 font-mono font-bold tracking-wider uppercase border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-all"
+                    >
+                        Browse More Events
+                    </a>
+                </div>
+            </footer>
+        </article>
+    </div>
+</BaseLayout>

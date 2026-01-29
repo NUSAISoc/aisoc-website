@@ -1,0 +1,103 @@
+---
+import Navigation from "@/components/Navigation.astro";
+import "@/styles/global.css";
+
+interface Props {
+    title: string;
+    description?: string;
+}
+
+const { title, description = "NUS SoC AI Society - From Theory to Deployment" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content={description} />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+            integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV"
+            crossorigin="anonymous"
+        />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title} | AISOC</title>
+    </head>
+    <body
+        class="min-h-screen bg-background font-mono antialiased selection:bg-primary selection:text-primary-foreground flex flex-col"
+    >
+        <!-- Top Status Bar (Brand Element) -->
+        <div class="status-bar hidden md:flex">
+            <span>NUS_SOC_AI_SOCIETY</span>
+            <span id="clock">00:00:00 SGT</span>
+            <span>SEM_2_AY25</span>
+        </div>
+
+        <Navigation />
+
+        <main class="flex-1 container mx-auto px-4 py-8 md:py-12">
+            <slot />
+        </main>
+
+        <footer class="border-t border-border bg-card py-8 mt-auto">
+            <div
+                class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs md:text-sm text-muted-foreground font-mono"
+            >
+                <div class="flex flex-col gap-1">
+                    <span class="font-bold text-foreground">NUS SoC AI Society</span>
+                    <span>COM1, 13 Computing Dr, Singapore 117417</span>
+                </div>
+
+                <a
+                    href="https://t.me/nusaisociety"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:text-primary transition-colors hover:underline decoration-primary decoration-1 underline-offset-4"
+                    >Telegram</a
+                >
+                <a
+                    href="https://github.com/nus-soc-aisoc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:text-primary transition-colors hover:underline decoration-primary decoration-1 underline-offset-4"
+                    >GitHub</a
+                >
+                <a
+                    href="mailto:contact@nusaisociety.org"
+                    class="hover:text-primary transition-colors hover:underline decoration-primary decoration-1 underline-offset-4"
+                    >Email</a
+                >
+                <a
+                    href="https://linkedin.com/company/nus-soc-aisoc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:text-primary transition-colors hover:underline decoration-primary decoration-1 underline-offset-4"
+                    >LinkedIn</a
+                >
+
+                <div class="opacity-50">// ENGINEERED IN SINGAPORE</div>
+            </div>
+        </footer>
+
+        <script>
+            // Simple clock script for status bar - Singapore time (UTC+8)
+            function updateClock() {
+                const clock = document.getElementById("clock");
+                if (clock) {
+                    // Create date and add 8 hours offset for Singapore timezone
+                    const now = new Date();
+                    const sgTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+                    const hours = String(sgTime.getUTCHours()).padStart(2, "0");
+                    const minutes = String(sgTime.getUTCMinutes()).padStart(2, "0");
+                    const seconds = String(sgTime.getUTCSeconds()).padStart(2, "0");
+                    clock.textContent = `${hours}:${minutes}:${seconds} SGT`;
+                }
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+        </script>
+    </body>
+</html>

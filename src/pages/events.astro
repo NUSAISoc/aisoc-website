@@ -1,0 +1,73 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { EventCard } from "@/components/react/EventCard";
+import { getCollection } from "astro:content";
+
+const allEvents = await getCollection("events");
+
+// Sort upcoming events: Nearest future date first
+const upcomingEvents = allEvents
+    .filter((event) => event.data.status === "upcoming")
+    .sort((a, b) => new Date(a.data.date).getTime() - new Date(b.data.date).getTime());
+
+// Sort past events: Most recent past date first
+const pastEvents = allEvents
+    .filter((event) => event.data.status === "past")
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout title="Events">
+    <div class="space-y-16">
+        {/* Page Header */}
+        <div class="space-y-4 border-b border-border pb-8">
+            <h1 class="text-4xl md:text-5xl font-display font-bold tracking-tighter uppercase text-foreground">
+                Event Log
+            </h1>
+            <p class="text-muted-foreground font-mono max-w-2xl">
+                Workshops, research talks, and hackathons. Join us to bridge the gap between theory and deployment.
+            </p>
+        </div>
+
+        {/* Upcoming Events Section */}
+        <section class="space-y-8">
+            <div class="flex items-center space-x-4">
+                <h2 class="text-2xl font-display uppercase tracking-tight text-primary">// UPCOMING_EVENTS</h2>
+                <div class="h-px flex-1 bg-border/50"></div>
+            </div>
+
+            {
+                upcomingEvents.length > 0 ? (
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {upcomingEvents.map((event) => (
+                            <EventCard client:load slug={event.slug} event={event} />
+                        ))}
+                    </div>
+                ) : (
+                    <div class="data-terminal text-center py-12 text-muted-foreground">
+                        [ NO_UPCOMING_EVENTS_DETECTED ]
+                    </div>
+                )
+            }
+        </section>
+
+        {/* Past Events Section */}
+        <section class="space-y-8">
+            <div class="flex items-center space-x-4">
+                <h2 class="text-2xl font-display uppercase tracking-tight text-muted-foreground">// PAST_EVENTS</h2>
+                <div class="h-px flex-1 bg-border/50"></div>
+            </div>
+
+            {
+                pastEvents.length > 0 ? (
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {pastEvents.map((event) => (
+                            <EventCard client:load slug={event.slug} event={event} />
+                        ))}
+                    </div>
+                ) : (
+                    <div class="data-terminal text-center py-12 text-muted-foreground">[ ARCHIVE_EMPTY ]</div>
+                )
+            }
+        </section>
+    </div>
+</BaseLayout>
