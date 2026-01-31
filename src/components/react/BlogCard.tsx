@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tag } from "@/components/react/Tag"
-import { calculateReadingTime } from "@/lib/utils"
+import { calculateReadingTime } from "@/lib/formatting"
 
 interface BlogCardProps {
   post: {

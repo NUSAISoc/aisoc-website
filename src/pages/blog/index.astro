@@ -1,41 +1,36 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { BlogCard } from '@/components/react/BlogCard';
-import { TagFilter } from '@/components/react/TagFilter';
-import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 
-const allPosts = await getCollection('blog');
+const allPosts = await getCollection("blog");
 const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 // Extract unique tags
-const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))].sort();
+const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
 
 // We need a client-side wrapper for filtering state
-// Since we can't easily share state between islands without a store (like nanostores), 
+// Since we can't easily share state between islands without a store (like nanostores),
 // and we want to keep this simple for static build + React islands:
 // We will implement a "FilteredBlogGrid" component that takes all posts as props and handles the filtering state internaly.
 // This is cleaner than trying to coordinate separate islands.
-import { FilteredBlogList } from '@/components/react/FilteredBlogList';
-
+import { FilteredBlogList } from "@/components/react/FilteredBlogList";
 ---
 
 <BaseLayout title="Blog">
-  <div class="space-y-16">
-    
-    {/* Page Header */}
-    <div class="space-y-4 border-b border-border pb-8">
-      <h1 class="text-4xl md:text-5xl font-display font-bold tracking-tighter uppercase text-foreground">
-        Research Log
-      </h1>
-      <p class="text-muted-foreground font-mono max-w-2xl">
-         Technical deep dives, tutorials, and insights from our engineering team.
-      </p>
+    <div class="space-y-16">
+        {/* Page Header */}
+        <div class="space-y-4 border-b border-border pb-8">
+            <h1 class="text-4xl md:text-5xl font-display font-bold tracking-tighter uppercase text-foreground">
+                Research Log
+            </h1>
+            <p class="text-muted-foreground font-mono max-w-2xl">
+                Technical deep dives, tutorials, and insights from our engineering team.
+            </p>
+        </div>
+
+        {/* Blog Content with Filtering */}
+        <section>
+            <FilteredBlogList client:load posts={sortedPosts} allTags={allTags} />
+        </section>
     </div>
-
-    {/* Blog Content with Filtering */}
-    <section>
-      <FilteredBlogList client:load posts={sortedPosts} allTags={allTags} />
-    </section>
-
-  </div>
 </BaseLayout>

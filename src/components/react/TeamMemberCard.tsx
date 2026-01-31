@@ -93,7 +93,7 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
                   </Button>
                 </a>
               )}
-               {social?.email && (
+              {social?.email && (
                 <a href={`mailto:${social.email}`}>
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
                     <Mail className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
         <DialogHeader className="p-6 pb-2">
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-24 w-24 border-2 border-primary mb-4">
-              <AvatarImage src={image} alt={name} />
+              <AvatarImage src={image} alt={name} className="object-cover" />
               <AvatarFallback>{name[0]}</AvatarFallback>
             </Avatar>
             <DialogTitle className="font-display text-2xl uppercase tracking-tight text-primary">
