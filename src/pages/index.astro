@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { Button } from "@/components/ui/button";
+import BentoCard from "@/components/BentoCard.astro";
+import InitiativeCard from "@/components/InitiativeCard.astro";
+import LinkCard from "@/components/LinkCard.astro";
 import {
     IconArrowRight,
     IconClock,
@@ -46,8 +48,9 @@ const formatDate = (date: Date) => {
         <main class="container mx-auto px-4 md:px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 auto-rows-min">
                 <!-- 1. Hero Section (Top Left - Large) -->
-                <div
-                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-[500px] flex flex-col justify-center p-8 md:p-12 border border-border bg-card/10 relative overflow-hidden group`}
+                <BentoCard
+                    variant="hero"
+                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-[500px] flex flex-col justify-center p-8 md:p-12`}
                 >
                     <!-- Background decoration: Grid + Radial -->
                     <div
@@ -87,12 +90,12 @@ const formatDate = (date: Date) => {
                             </a>
                         </div>
                     </div>
-                </div>
+                </BentoCard>
 
                 <!-- 2. Next Event (Top Right - Medium) -->
                 {
                     nextEvent && (
-                        <div class="col-span-1 md:col-span-6 lg:col-span-4 flex flex-col border border-border bg-card/20 relative overflow-hidden group hover:border-primary/50 transition-colors">
+                        <BentoCard variant="event" class="col-span-1 md:col-span-6 lg:col-span-4 flex flex-col">
                             {nextEvent.data.image && (
                                 <div class="absolute inset-0 z-0">
                                     <img
@@ -144,14 +147,12 @@ const formatDate = (date: Date) => {
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </BentoCard>
                     )
                 }
 
                 <!-- 3. Mission Statement (Full Width) -->
-                <div
-                    class="col-span-1 md:col-span-6 lg:col-span-12 flex flex-col md:flex-row items-center border border-border bg-card/20 p-8 md:p-12 gap-8 hover:border-primary/30 transition-colors"
-                >
+                <BentoCard variant="mission" class="col-span-1 md:col-span-6 lg:col-span-12 p-8 md:p-12">
                     <div class="flex-shrink-0">
                         <div
                             class="w-16 h-16 border-2 border-primary flex items-center justify-center rounded-full bg-primary/10"
@@ -171,7 +172,7 @@ const formatDate = (date: Date) => {
                             through masterclasses, research groups, and hacks.
                         </p>
                     </div>
-                </div>
+                </BentoCard>
 
                 <!-- 4. Core Initiatives (Pillars) -->
                 <div class="col-span-1 md:col-span-6 lg:col-span-12 pt-8">
@@ -184,68 +185,25 @@ const formatDate = (date: Date) => {
                 </div>
 
                 <!-- Democratise -->
-                <div
-                    class="col-span-1 md:col-span-2 lg:col-span-4 p-8 border border-border bg-card/20 hover:bg-card/40 hover:border-primary/50 transition-all group cursor-default"
-                >
-                    <div
-                        class="w-12 h-12 border border-border flex items-center justify-center mb-6 group-hover:border-primary group-hover:bg-primary/10 transition-colors"
-                    >
-                        <IconTerminal
-                            className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <h3
-                        class="text-xl font-display uppercase tracking-tight mb-3 group-hover:text-primary transition-colors"
-                    >
-                        Open Access
-                    </h3>
-                    <p class="text-muted-foreground font-mono text-sm leading-relaxed">
-                        Democratising AI education with workshops for all skill levels. From Python basics to
-                        Transformer architecture, we make intelligence accessible.
-                    </p>
-                </div>
+                <InitiativeCard
+                    icon={IconTerminal}
+                    title="Open Access"
+                    description="Democratising AI education with workshops for all skill levels. From Python basics to Transformer architecture, we make intelligence accessible."
+                />
 
                 <!-- Drive -->
-                <div
-                    class="col-span-1 md:col-span-2 lg:col-span-4 p-8 border border-border bg-card/20 hover:bg-card/40 hover:border-primary/50 transition-all group cursor-default"
-                >
-                    <div
-                        class="w-12 h-12 border border-border flex items-center justify-center mb-6 group-hover:border-primary group-hover:bg-primary/10 transition-colors"
-                    >
-                        <IconCpu className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
-                    <h3
-                        class="text-xl font-display uppercase tracking-tight mb-3 group-hover:text-primary transition-colors"
-                    >
-                        Project Build
-                    </h3>
-                    <p class="text-muted-foreground font-mono text-sm leading-relaxed">
-                        Driving innovation through hands-on development. We deploy solutions to real-world problems and
-                        build the future, one epoch at a time.
-                    </p>
-                </div>
+                <InitiativeCard
+                    icon={IconCpu}
+                    title="Project Build"
+                    description="Driving innovation through hands-on development. We deploy solutions to real-world problems and build the future, one epoch at a time."
+                />
 
                 <!-- Connect -->
-                <div
-                    class="col-span-1 md:col-span-2 lg:col-span-4 p-8 border border-border bg-card/20 hover:bg-card/40 hover:border-primary/50 transition-all group cursor-default"
-                >
-                    <div
-                        class="w-12 h-12 border border-border flex items-center justify-center mb-6 group-hover:border-primary group-hover:bg-primary/10 transition-colors"
-                    >
-                        <IconNetwork
-                            className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <h3
-                        class="text-xl font-display uppercase tracking-tight mb-3 group-hover:text-primary transition-colors"
-                    >
-                        Network Sync
-                    </h3>
-                    <p class="text-muted-foreground font-mono text-sm leading-relaxed">
-                        Connecting students with industry leaders and research pioneers. A high-bandwidth exchange of
-                        ideas and opportunities.
-                    </p>
-                </div>
+                <InitiativeCard
+                    icon={IconNetwork}
+                    title="Network Sync"
+                    description="Connecting students with industry leaders and research pioneers. A high-bandwidth exchange of ideas and opportunities."
+                />
 
                 <!-- 5. Community & Contact -->
                 <div class="col-span-1 md:col-span-6 lg:col-span-12 pt-8">
@@ -258,163 +216,64 @@ const formatDate = (date: Date) => {
                 </div>
 
                 <!-- Telegram Main (Large) -->
-                <a
+                <LinkCard
                     href="https://t.me/+iOXKIVLSYcw5OTA1"
                     target="_blank"
-                    class="col-span-1 md:col-span-3 lg:col-span-4 p-6 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex flex-col h-40 justify-between"
-                >
-                    <div class="flex items-start justify-between">
-                        <div
-                            class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                        >
-                            <IconSend
-                                className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"
-                            />
-                        </div>
-                        <IconArrowRight
-                            className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"
-                        />
-                    </div>
-                    <div>
-                        <h3
-                            class="font-display text-lg uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >
-                            Telegram Discussion
-                        </h3>
-                        <p class="text-xs text-muted-foreground font-mono mt-1">Global broadcast. 500+ members.</p>
-                    </div>
-                </a>
+                    variant="large"
+                    icon={IconSend}
+                    title="Telegram Discussion"
+                    subtitle="Global broadcast. 500+ members."
+                />
 
                 <!-- Telegram Alerts (Large) -->
-                <a
+                <LinkCard
                     href="https://t.me/nusaisociety"
                     target="_blank"
-                    class="col-span-1 md:col-span-3 lg:col-span-4 p-6 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex flex-col h-40 justify-between"
-                >
-                    <div class="flex items-start justify-between">
-                        <div
-                            class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                        >
-                            <IconSend
-                                className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"
-                            />
-                        </div>
-                        <IconArrowRight
-                            className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"
-                        />
-                    </div>
-                    <div>
-                        <h3
-                            class="font-display text-lg uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >
-                            Telegram Alerts
-                        </h3>
-                        <p class="text-xs text-muted-foreground font-mono mt-1">Official announcements. No noise.</p>
-                    </div>
-                </a>
+                    variant="large"
+                    icon={IconSend}
+                    title="Telegram Alerts"
+                    subtitle="Official announcements. No noise."
+                />
 
                 <!-- Discord (Large) -->
-                <a
+                <LinkCard
                     href="https://discord.com/invite/yazkAEsjww"
                     target="_blank"
-                    class="col-span-1 md:col-span-6 lg:col-span-4 p-6 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex flex-col h-40 justify-between"
-                >
-                    <div class="flex items-start justify-between">
-                        <div
-                            class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                        >
-                            <IconMessageCircle className="h-5 w-5 text-primary" />
-                        </div>
-                        <div
-                            class="px-2 py-1 border border-primary/20 rounded-full text-[10px] font-mono text-primary uppercase bg-primary/5 group-hover:bg-primary group-hover:text-primary-foreground transition-all"
-                        >
-                            Join Server
-                        </div>
-                    </div>
-                    <div>
-                        <h3
-                            class="font-display text-lg uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >
-                            Discord Workspace
-                        </h3>
-                        <p class="text-xs text-muted-foreground font-mono mt-1">The central operating system.</p>
-                    </div>
-                </a>
+                    variant="large"
+                    icon={IconMessageCircle}
+                    iconHighlight
+                    title="Discord Workspace"
+                    subtitle="The central operating system."
+                    badge="Join Server"
+                    class="md:col-span-6"
+                />
 
                 <!-- LinkedIn -->
-                <a
+                <LinkCard
                     href="https://www.linkedin.com/company/nus-computing-ai-society/"
                     target="_blank"
-                    class="col-span-1 md:col-span-3 lg:col-span-3 p-4 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex items-center gap-4"
-                >
-                    <div
-                        class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                    >
-                        <IconBrandLinkedin
-                            className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <span
-                        class="font-display text-sm uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >LinkedIn</span
-                    >
-                </a>
+                    icon={IconBrandLinkedin}
+                    title="LinkedIn"
+                />
 
                 <!-- X (Twitter) -->
-                <a
+                <LinkCard
                     href="https://x.com/socaisociety"
                     target="_blank"
-                    class="col-span-1 md:col-span-3 lg:col-span-3 p-4 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex items-center gap-4"
-                >
-                    <div
-                        class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                    >
-                        <IconBrandTwitter
-                            className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <span
-                        class="font-display text-sm uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >X / Twitter</span
-                    >
-                </a>
+                    icon={IconBrandTwitter}
+                    title="X / Twitter"
+                />
 
                 <!-- Email -->
-                <a
-                    href="mailto:contact@nusaisociety.org"
-                    class="col-span-1 md:col-span-3 lg:col-span-3 p-4 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex items-center gap-4"
-                >
-                    <div
-                        class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                    >
-                        <IconMail
-                            className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <span
-                        class="font-display text-sm uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >Email</span
-                    >
-                </a>
+                <LinkCard href="mailto:contact@nusaisociety.org" icon={IconMail} title="Email" />
 
                 <!-- Hugging Face -->
-                <a
+                <LinkCard
                     href="https://huggingface.co/socaisociety"
                     target="_blank"
-                    class="col-span-1 md:col-span-3 lg:col-span-3 p-4 border border-border bg-card/20 hover:border-primary hover:bg-card/40 transition-all group flex items-center gap-4"
-                >
-                    <div
-                        class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors"
-                    >
-                        <IconRobot
-                            className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                    </div>
-                    <span
-                        class="font-display text-sm uppercase tracking-tight group-hover:text-primary transition-colors"
-                        >Hugging Face</span
-                    >
-                </a>
+                    icon={IconRobot}
+                    title="Hugging Face"
+                />
             </div>
         </main>
     </div>

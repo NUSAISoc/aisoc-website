@@ -1,0 +1,82 @@
+---
+/**
+ * LinkCard - A card for displaying external links with icon, title, and optional subtitle/badge.
+ * Supports 'large' and 'compact' variants for different layouts.
+ */
+import BentoCard from "./BentoCard.astro";
+import { IconArrowRight } from "@tabler/icons-react";
+
+interface Props {
+    href: string;
+    icon: any; // Tabler icon component
+    title: string;
+    subtitle?: string;
+    badge?: string;
+    variant?: "large" | "compact";
+    target?: string;
+    class?: string;
+    iconHighlight?: boolean; // Whether icon should be highlighted (primary color)
+}
+
+const {
+    href,
+    icon: Icon,
+    title,
+    subtitle,
+    badge,
+    variant = "compact",
+    target,
+    iconHighlight = false,
+    class: className,
+} = Astro.props;
+
+const isLarge = variant === "large";
+---
+
+{
+    isLarge ? (
+        <BentoCard
+            as="a"
+            href={href}
+            target={target}
+            variant="link-large"
+            class={`col-span-1 md:col-span-3 lg:col-span-4 p-6 h-40 ${className ?? ""}`}
+        >
+            <div class="flex items-start justify-between">
+                <div class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors">
+                    <Icon
+                        className={`h-5 w-5 ${iconHighlight ? "text-primary" : "text-muted-foreground group-hover:text-primary"} transition-colors`}
+                    />
+                </div>
+                {badge ? (
+                    <div class="px-2 py-1 border border-primary/20 rounded-full text-[10px] font-mono text-primary uppercase bg-primary/5 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                        {badge}
+                    </div>
+                ) : (
+                    <IconArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                )}
+            </div>
+            <div>
+                <h3 class="font-display text-lg uppercase tracking-tight group-hover:text-primary transition-colors">
+                    {title}
+                </h3>
+                {subtitle && <p class="text-xs text-muted-foreground font-mono mt-1">{subtitle}</p>}
+            </div>
+        </BentoCard>
+    ) : (
+        <BentoCard
+            as="a"
+            href={href}
+            target={target}
+            variant="link-compact"
+            class={`col-span-1 md:col-span-3 lg:col-span-3 p-4 ${className ?? ""}`}
+        >
+            <div class="p-2 bg-background/50 rounded-sm border border-border group-hover:border-primary/50 transition-colors">
+                <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
+            <span class="font-display text-sm uppercase tracking-tight group-hover:text-primary transition-colors">
+                {title}
+            </span>
+        </BentoCard>
+    )
+}

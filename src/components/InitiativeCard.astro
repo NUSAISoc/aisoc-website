@@ -1,0 +1,30 @@
+---
+/**
+ * InitiativeCard - A card for displaying initiative/feature items with icon, title, and description.
+ * Wraps BentoCard with the 'initiative' variant and provides structured props.
+ */
+import BentoCard from "./BentoCard.astro";
+
+interface Props {
+    icon: any; // Tabler icon component
+    title: string;
+    description: string;
+    class?: string;
+}
+
+const { icon: Icon, title, description, class: className } = Astro.props;
+---
+
+<BentoCard variant="initiative" class={`col-span-1 md:col-span-2 lg:col-span-4 p-8 ${className ?? ""}`}>
+    <div
+        class="w-12 h-12 border border-border flex items-center justify-center mb-6 group-hover:border-primary group-hover:bg-primary/10 transition-colors"
+    >
+        <Icon className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+    </div>
+    <h3 class="text-xl font-display uppercase tracking-tight mb-3 group-hover:text-primary transition-colors">
+        {title}
+    </h3>
+    <p class="text-muted-foreground font-mono text-sm leading-relaxed">
+        {description}
+    </p>
+</BentoCard>

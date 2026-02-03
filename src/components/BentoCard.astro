@@ -1,0 +1,49 @@
+---
+/**
+ * BentoCard - A flexible card component for the homepage bento grid layout.
+ * Supports multiple variants for different content types.
+ */
+export interface Props {
+    variant?: "default" | "hero" | "event" | "mission" | "initiative" | "link-large" | "link-compact";
+    as?: "div" | "a";
+    href?: string;
+    target?: string;
+    class?: string;
+}
+
+const { variant = "default", as: Tag = "div", href, target, class: className } = Astro.props;
+
+// Base styles shared across all variants
+const baseStyles = "border border-border transition-all";
+
+// Variant-specific styles
+const variantStyles: Record<string, string> = {
+    default: "bg-card/20 hover:border-primary/50",
+
+    hero: "bg-card/10 relative overflow-hidden group",
+
+    event: "bg-card/20 relative overflow-hidden group hover:border-primary/50",
+
+    mission: "bg-card/20 flex flex-col md:flex-row items-center gap-8 hover:border-primary/30",
+
+    initiative: "bg-card/20 hover:bg-card/40 hover:border-primary/50 group cursor-default",
+
+    "link-large": "bg-card/20 hover:border-primary hover:bg-card/40 group flex flex-col justify-between",
+
+    "link-compact": "bg-card/20 hover:border-primary hover:bg-card/40 group flex items-center gap-4",
+};
+
+const combinedClasses = [baseStyles, variantStyles[variant], className].filter(Boolean).join(" ");
+---
+
+{
+    Tag === "a" ? (
+        <a href={href} target={target} class={combinedClasses}>
+            <slot />
+        </a>
+    ) : (
+        <div class={combinedClasses}>
+            <slot />
+        </div>
+    )
+}
