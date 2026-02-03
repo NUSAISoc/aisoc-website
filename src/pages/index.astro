@@ -20,10 +20,14 @@ import {
 // Get next upcoming event
 const allEvents = await getCollection("events");
 const now = new Date();
+const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
 const upcomingEvents = allEvents
     .filter((event) => event.data.status === "upcoming" || new Date(event.data.date) >= now)
     .sort((a, b) => new Date(a.data.date).getTime() - new Date(b.data.date).getTime());
-const nextEvent = upcomingEvents[0];
+
+const upcomingEvent = upcomingEvents[0];
+const nextEvent = upcomingEvent && new Date(upcomingEvent.data.date) <= oneWeekFromNow ? upcomingEvent : null;
 
 const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-SG", {
@@ -43,7 +47,7 @@ const formatDate = (date: Date) => {
             <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 auto-rows-min">
                 <!-- 1. Hero Section (Top Left - Large) -->
                 <div
-                    class="col-span-1 md:col-span-6 lg:col-span-8 min-h-[500px] flex flex-col justify-center p-8 md:p-12 border border-border bg-card/10 relative overflow-hidden group"
+                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-[500px] flex flex-col justify-center p-8 md:p-12 border border-border bg-card/10 relative overflow-hidden group`}
                 >
                     <!-- Background decoration: Grid + Radial -->
                     <div
@@ -86,80 +90,63 @@ const formatDate = (date: Date) => {
                 </div>
 
                 <!-- 2. Next Event (Top Right - Medium) -->
-                <div
-                    class="col-span-1 md:col-span-6 lg:col-span-4 flex flex-col border border-border bg-card/20 relative overflow-hidden group hover:border-primary/50 transition-colors"
-                >
-                    {
-                        nextEvent ? (
-                            <>
-                                {nextEvent.data.image && (
-                                    <div class="absolute inset-0 z-0">
-                                        <img
-                                            src={nextEvent.data.image}
-                                            alt={nextEvent.data.title}
-                                            class="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
-                                        />
-                                        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
-                                    </div>
-                                )}
-                                <div class="absolute top-0 right-0 z-20 bg-primary/20 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest backdrop-blur-sm border-l border-b border-primary/20">
-                                    Next Up
+                {
+                    nextEvent && (
+                        <div class="col-span-1 md:col-span-6 lg:col-span-4 flex flex-col border border-border bg-card/20 relative overflow-hidden group hover:border-primary/50 transition-colors">
+                            {nextEvent.data.image && (
+                                <div class="absolute inset-0 z-0">
+                                    <img
+                                        src={nextEvent.data.image}
+                                        alt={nextEvent.data.title}
+                                        class="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+                                    />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
                                 </div>
-                                <div class="p-8 flex flex-col h-full justify-between relative z-10">
-                                    <div class="space-y-6">
-                                        <div class="space-y-2">
-                                            <p class="text-primary font-mono text-sm uppercase tracking-wide">
-                                                {formatDate(new Date(nextEvent.data.date))}
-                                            </p>
-                                            <h3 class="text-3xl font-display uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
-                                                {nextEvent.data.title}
-                                            </h3>
-                                        </div>
-
-                                        <div class="space-y-3 text-sm text-muted-foreground font-mono border-l-2 border-primary/20 pl-4">
-                                            <div class="flex items-center gap-3">
-                                                <IconClock className="h-4 w-4 text-primary" />
-                                                <span>{nextEvent.data.time}</span>
-                                            </div>
-                                            <div class="flex items-center gap-3">
-                                                <IconMapPin className="h-4 w-4 text-primary" />
-                                                <span>{nextEvent.data.location}</span>
-                                            </div>
-                                        </div>
-
-                                        {nextEvent.data.description && (
-                                            <p class="text-muted-foreground line-clamp-3 text-sm font-mono">
-                                                {nextEvent.data.description}
-                                            </p>
-                                        )}
+                            )}
+                            <div class="absolute top-0 right-0 z-20 bg-primary/20 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest backdrop-blur-sm border-l border-b border-primary/20">
+                                Next Up
+                            </div>
+                            <div class="p-8 flex flex-col h-full justify-between relative z-10">
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <p class="text-primary font-mono text-sm uppercase tracking-wide">
+                                            {formatDate(new Date(nextEvent.data.date))}
+                                        </p>
+                                        <h3 class="text-3xl font-display uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
+                                            {nextEvent.data.title}
+                                        </h3>
                                     </div>
 
-                                    <div class="mt-6 border-t border-border pt-4">
-                                        <a
-                                            href={`/events/${nextEvent.slug}`}
-                                            class="inline-flex items-center text-sm font-mono text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
-                                        >
-                                            [ View Details ] <IconArrowRight className="ml-2 h-3 w-3" />
-                                        </a>
+                                    <div class="space-y-3 text-sm text-muted-foreground font-mono border-l-2 border-primary/20 pl-4">
+                                        <div class="flex items-center gap-3">
+                                            <IconClock className="h-4 w-4 text-primary" />
+                                            <span>{nextEvent.data.time}</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <IconMapPin className="h-4 w-4 text-primary" />
+                                            <span>{nextEvent.data.location}</span>
+                                        </div>
                                     </div>
+
+                                    {nextEvent.data.description && (
+                                        <p class="text-muted-foreground line-clamp-3 text-sm font-mono">
+                                            {nextEvent.data.description}
+                                        </p>
+                                    )}
                                 </div>
-                            </>
-                        ) : (
-                            <div class="p-8 flex flex-col items-center justify-center h-full text-center space-y-4">
-                                <IconClock className="h-12 w-12 text-muted-foreground/20" />
-                                <p class="text-muted-foreground font-mono">No upcoming events scheduled.</p>
-                                <div class="mt-6 border-t border-border pt-4 w-full">
+
+                                <div class="mt-6 border-t border-border pt-4">
                                     <a
-                                        href="/events"
-                                        class="inline-flex items-center text-sm font-mono text-muted-foreground hover:text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
+                                        href={`/events/${nextEvent.slug}`}
+                                        class="inline-flex items-center text-sm font-mono text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
                                     >
-                                        [ Check Archive ] <IconArrowRight className="ml-2 h-3 w-3" />
+                                        [ View Details ] <IconArrowRight className="ml-2 h-3 w-3" />
                                     </a>
                                 </div>
                             </div>
-                        )
-                    }
-                </div>
+                        </div>
+                    )
+                }
 
                 <!-- 3. Mission Statement (Full Width) -->
                 <div
