@@ -1,6 +1,6 @@
 import * as React from "react"
 import { format } from "date-fns"
-import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react"
+import { IconCalendar, IconMapPin, IconClock, IconArrowRight } from "@tabler/icons-react"
 
 import {
   Card,
@@ -59,7 +59,7 @@ export function EventCard({ slug, event }: EventCardProps) {
               {title}
             </CardTitle>
             <div className="flex items-center text-sm text-muted-foreground font-mono">
-              <Calendar className="mr-2 h-3 w-3" />
+              <IconCalendar className="mr-2 h-3 w-3" />
               {format(dateObj, "dd MMM yyyy")}
             </div>
           </div>
@@ -67,18 +67,18 @@ export function EventCard({ slug, event }: EventCardProps) {
         
         <CardContent className="flex-1 space-y-2 text-sm text-muted-foreground font-mono">
           <div className="flex items-center">
-            <Clock className="mr-2 h-3 w-3 text-secondary-foreground" />
+            <IconClock className="mr-2 h-3 w-3 text-secondary-foreground" />
             {time}
           </div>
           <div className="flex items-center">
-            <MapPin className="mr-2 h-3 w-3 text-secondary-foreground" />
+            <IconMapPin className="mr-2 h-3 w-3 text-secondary-foreground" />
             {location}
           </div>
         </CardContent>
         
         <CardFooter className="border-t border-border pt-4 mt-auto">
           <span className="text-xs font-mono text-primary group-hover:translate-x-1 transition-transform inline-flex items-center">
-            [ ACCESS_DETAILS ] <ArrowRight className="ml-1 h-3 w-3" />
+            [ ACCESS_DETAILS ] <IconArrowRight className="ml-1 h-3 w-3" />
           </span>
         </CardFooter>
       </Card>

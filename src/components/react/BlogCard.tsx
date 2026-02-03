@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Calendar, User, Clock, ArrowRight } from "lucide-react"
+import { IconCalendar, IconUser, IconClock, IconArrowRight } from "@tabler/icons-react"
 import { format } from "date-fns"
 
 import {
@@ -61,10 +61,10 @@ export function BlogCard({ post }: BlogCardProps) {
           </CardTitle>
           <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
             <span className="flex items-center">
-              <User className="mr-1 h-3 w-3" /> {author}
+              <IconUser className="mr-1 h-3 w-3" /> {author}
             </span>
             <span className="flex items-center">
-              <Calendar className="mr-1 h-3 w-3" /> {format(dateObj, "MMM dd, yyyy")}
+              <IconCalendar className="mr-1 h-3 w-3" /> {format(dateObj, "MMM dd, yyyy")}
             </span>
           </div>
         </CardHeader>
@@ -77,10 +77,10 @@ export function BlogCard({ post }: BlogCardProps) {
         
         <CardFooter className="border-t border-border pt-4 mt-auto flex justify-between items-center">
           <span className="text-xs font-mono text-muted-foreground flex items-center">
-            <Clock className="mr-1 h-3 w-3" /> {readingTime}
+            <IconClock className="mr-1 h-3 w-3" /> {readingTime}
           </span>
           <span className="text-xs font-mono text-primary flex items-center group-hover:translate-x-1 transition-transform">
-            READ_ENTRY <ArrowRight className="ml-1 h-3 w-3" />
+            READ_ENTRY <IconArrowRight className="ml-1 h-3 w-3" />
           </span>
         </CardFooter>
       </Card>

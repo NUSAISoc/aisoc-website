@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Github, Linkedin, Globe, Mail, Twitter } from "lucide-react"
+import { IconBrandGithub, IconBrandLinkedin, IconWorld, IconMail, IconBrandTwitter } from "@tabler/icons-react"
 
 import {
   Card,
@@ -68,35 +68,35 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
               {social?.github && (
                 <a href={social.github} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <Github className="h-4 w-4" />
+                    <IconBrandGithub className="h-4 w-4" />
                   </Button>
                 </a>
               )}
               {social?.linkedin && (
                 <a href={social.linkedin} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <Linkedin className="h-4 w-4" />
+                    <IconBrandLinkedin className="h-4 w-4" />
                   </Button>
                 </a>
               )}
               {social?.twitter && (
                 <a href={social.twitter} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <Twitter className="h-4 w-4" />
+                    <IconBrandTwitter className="h-4 w-4" />
                   </Button>
                 </a>
               )}
               {social?.website && (
                 <a href={social.website} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <Globe className="h-4 w-4" />
+                    <IconWorld className="h-4 w-4" />
                   </Button>
                 </a>
               )}
               {social?.email && (
                 <a href={`mailto:${social.email}`}>
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <Mail className="h-4 w-4" />
+                    <IconMail className="h-4 w-4" />
                   </Button>
                 </a>
               )}
@@ -133,35 +133,35 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
             {social?.github && (
                <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
                  <a href={social.github} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <Github className="h-4 w-4" />
+                   <IconBrandGithub className="h-4 w-4" />
                  </a>
                </Button>
             )}
             {social?.linkedin && (
                <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
                  <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <Linkedin className="h-4 w-4" />
+                   <IconBrandLinkedin className="h-4 w-4" />
                  </a>
                </Button>
             )}
             {social?.twitter && (
                <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
                  <a href={social.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <Twitter className="h-4 w-4" />
+                   <IconBrandTwitter className="h-4 w-4" />
                  </a>
                </Button>
             )}
             {social?.website && (
                <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
                  <a href={social.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <Globe className="h-4 w-4" />
+                   <IconWorld className="h-4 w-4" />
                  </a>
                </Button>
             )}
             {social?.email && (
                <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
                  <a href={`mailto:${social.email}`} className="flex items-center justify-center">
-                   <Mail className="h-4 w-4" />
+                   <IconMail className="h-4 w-4" />
                  </a>
                </Button>
             )}
