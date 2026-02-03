@@ -1,6 +1,6 @@
 ---
 title: "Introduction to LLMs Workshop"
-date: "2026-02-15T14:00:00Z"
+date: "2026-02-07T14:00:00Z"
 time: "14:00 - 17:00"
 location: "COM2 Level 2 Seminar Room"
 status: "upcoming"

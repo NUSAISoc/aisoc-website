@@ -1,0 +1,55 @@
+---
+/**
+ * BlogCardPlaceholder - Code-bracket pattern with tag display
+ * Used when a blog post doesn't have a cover image
+ */
+import { format } from "date-fns";
+
+interface Props {
+    date: Date;
+    tag: string;
+}
+
+const { date, tag } = Astro.props;
+---
+
+<!-- Scan lines overlay -->
+<div class="absolute inset-0 opacity-10">
+    <div
+        class="h-full w-full"
+        style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, currentColor 2px, currentColor 3px);"
+    >
+    </div>
+</div>
+
+<!-- Decorative code brackets -->
+<div class="absolute inset-0 flex items-center justify-center">
+    <div class="flex items-center gap-3">
+        <span class="text-4xl font-mono text-primary/30 font-bold">{"{"}</span>
+        <div class="flex flex-col items-center">
+            <span
+                class="text-2xl font-display uppercase tracking-widest text-primary/60 group-hover:text-primary/80 transition-colors"
+            >
+                {tag || "BLOG"}
+            </span>
+            <span class="text-xs font-mono text-muted-foreground mt-1">
+                {"///"}
+                {format(date, "yyyy.MM.dd")}
+            </span>
+        </div>
+        <span class="text-4xl font-mono text-primary/30 font-bold">{"}"}</span>
+    </div>
+</div>
+
+<!-- Corner accents -->
+<div class="absolute top-0 left-0 w-8 h-8 border-l border-t border-primary/30"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-r border-t border-primary/30"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-secondary/30"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-r border-b border-secondary/30"></div>
+
+<!-- Dot matrix decoration -->
+<div class="absolute top-3 left-3 flex gap-1">
+    <div class="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
+    <div class="w-1.5 h-1.5 rounded-full bg-primary/25"></div>
+    <div class="w-1.5 h-1.5 rounded-full bg-primary/15"></div>
+</div>

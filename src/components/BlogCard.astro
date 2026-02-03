@@ -1,0 +1,98 @@
+---
+import { format } from "date-fns";
+import { IconCalendar, IconUser, IconClock, IconArrowRight } from "@tabler/icons-react";
+import Tag from "@/components/Tag.astro";
+import BlogCardPlaceholder from "@/components/placeholders/BlogCardPlaceholder.astro";
+import { calculateReadingTime } from "@/lib/formatting";
+
+interface Props {
+    post: {
+        slug: string;
+        data: {
+            title: string;
+            author: string;
+            date: Date | string;
+            excerpt: string;
+            tags: string[];
+            coverImage?: string;
+        };
+        body?: string;
+    };
+}
+
+const { post } = Astro.props;
+const { title, author, date, excerpt, tags, coverImage } = post.data;
+const dateObj = typeof date === "string" ? new Date(date) : date;
+
+// Calculate reading time from body if available, or estimate from excerpt
+const readingTime = post.body ? calculateReadingTime(post.body) : "3 min read";
+---
+
+<a href={`/blog/${post.slug}`} class="block h-full no-underline">
+    <div
+        class="h-full flex flex-col overflow-hidden border border-border bg-card hover:bg-muted/10 transition-all hover:border-primary/50 group pt-0 gap-0 rounded-xl text-card-foreground shadow-sm"
+    >
+        <!-- Card Image / Placeholder -->
+        <div
+            class:list={[
+                "aspect-[2.5/1] w-full overflow-hidden border-b border-border relative",
+                coverImage ? "bg-muted" : "bg-gradient-to-br from-muted/50 via-background to-muted/30",
+            ]}
+        >
+            {
+                coverImage ? (
+                    <Fragment>
+                        <img
+                            src={coverImage}
+                            alt={title}
+                            class="h-full w-full object-cover transition-all duration-500 group-hover:scale-105 opacity-50 grayscale group-hover:opacity-70 group-hover:grayscale-0"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+                    </Fragment>
+                ) : (
+                    <BlogCardPlaceholder date={dateObj} tag={tags[0]} />
+                )
+            }
+        </div>
+
+        <!-- Card Header -->
+        <div class="flex flex-col space-y-1.5 p-6 space-y-2 pt-4">
+            <div class="flex flex-wrap gap-2">
+                {tags.slice(0, 3).map((tag) => <Tag tag={tag} />)}
+            </div>
+            <h3 class="font-display text-xl leading-tight group-hover:text-primary transition-colors">
+                {title}
+            </h3>
+            <div class="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+                <span class="flex items-center">
+                    <IconUser className="mr-1 h-3 w-3" />
+                    {author}
+                </span>
+                <span class="flex items-center">
+                    <IconCalendar className="mr-1 h-3 w-3" />
+                    {format(dateObj, "MMM dd, yyyy")}
+                </span>
+            </div>
+        </div>
+
+        <!-- Card Content -->
+        <div class="p-6 pt-0 flex-1 pt-2 pb-4">
+            <p class="text-sm text-muted-foreground font-mono leading-relaxed line-clamp-2">
+                {excerpt}
+            </p>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="flex items-center p-6 pt-0 border-t border-border pt-4 mt-auto justify-between">
+            <span class="text-xs font-mono text-muted-foreground flex items-center">
+                <IconClock className="mr-1 h-3 w-3" />
+                {readingTime}
+            </span>
+            <span
+                class="text-xs font-mono text-primary flex items-center group-hover:translate-x-1 transition-transform"
+            >
+                READ_ENTRY <IconArrowRight className="ml-1 h-3 w-3" />
+            </span>
+        </div>
+    </div>
+</a>

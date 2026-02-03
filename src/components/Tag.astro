@@ -1,0 +1,14 @@
+---
+import { cn } from "@/lib/classnames";
+
+interface Props {
+    tag: string;
+    class?: string;
+}
+
+const { tag, class: className } = Astro.props;
+---
+
+<span class={cn("inline-block text-xs font-mono uppercase tracking-widest text-primary", className)}>
+    #{tag}
+</span>
