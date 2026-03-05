@@ -21,9 +21,17 @@ const sortedTeam = teamMembers.sort((a, b) => a.data.order - b.data.order);
 
         {/* Team Grid */}
         <section>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {sortedTeam.map((member) => <TeamMemberCard client:load member={member} />)}
-            </div>
+            {
+                sortedTeam.length > 0 ? (
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {sortedTeam.map((member) => (
+                            <TeamMemberCard client:load member={member} />
+                        ))}
+                    </div>
+                ) : (
+                    <div class="data-terminal text-center py-12 text-muted-foreground">[ NO_TEAM_MEMBERS_FOUND ]</div>
+                )
+            }
         </section>
     </div>
 </BaseLayout>
