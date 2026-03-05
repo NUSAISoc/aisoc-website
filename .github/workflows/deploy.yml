@@ -2,9 +2,11 @@ name: Build & Deploy
 
 on:
     push:
-        branches: [main]
+        branches:
+            - main
     repository_dispatch:
-        types: [content-update]
+        types:
+            - content-update
     workflow_dispatch:
 
 jobs:
@@ -34,3 +36,4 @@ jobs:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
                   command: deploy
+                  wranglerVersion: "4"
