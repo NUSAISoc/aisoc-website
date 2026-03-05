@@ -1,0 +1,10 @@
+{
+  "name": "aisoc-website",
+  // https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+  "compatibility_date": "2026-03-06",
+  "assets": {
+    "directory": "./dist",
+    // serves src/pages/404.astro for unmatched routes
+    "not_found_handling": "404-page"
+  }
+}
