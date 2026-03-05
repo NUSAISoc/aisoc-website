@@ -2,24 +2,24 @@
 
 > **FROM THEORY TO DEPLOYMENT.**
 
-The official website for the National University of Singapore (NUS) School of Computing AI Society (AISOC). This project is built with a focus on "Graphic Realism"—blending industrial, data-dense aesthetics with rigorous engineering principles.
+The official website for the National University of Singapore (NUS) School of Computing AI Society (AISOC).
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Framework**: [Astro](https://astro.build/) (Static Site Generation)
 - **UI Components**: [React](https://reactjs.org/) + [shadcn/ui](https://ui.shadcn.com/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Mathematics**: [KaTeX](https://katex.org/) (via `remark-math` and `rehype-katex`)
-- **Deployment**: [Cloudflare Workers / Pages](https://pages.cloudflare.com/)
+- **Deployment**: [Cloudflare Workers](https://workers.cloudflare.com/) via GitHub Actions
 
-## ✨ Features
+## Features
 
 - **Events Subpage (`/events`)**: Display upcoming events for registration and an archive of past gatherings.
 - **Core Team Subpage (`/team`)**: Showcase the students and researchers driving AISOC forward.
-- **Blog Subpage (`/blog`)**: Technical articles on machine learning, engineering, and research, synced from external sources.
-- **Industrial Design**: A high-contrast "Clinical Acid" color palette and geometric typography.
+- **Blog Subpage (`/blog`)**: Technical articles on machine learning, engineering, and research.
+- **Automated Content Pipeline**: Blog, event, and team content is fetched from [`aisoc-website-content`](https://github.com/NUSAISoc/aisoc-website-content) at build time and re-deployed automatically when that repo changes.
 
-## 🛠️ Quick Start
+## Quick Start
 
 All commands are run from the root of the project:
 
@@ -30,48 +30,61 @@ npm install
 # Start local development server (localhost:4321)
 npm run dev
 
-# Build for production
+# Build for production (fetches content from external repo first)
 npm run build
 
 # Preview production build locally
 npm run preview
 ```
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 /
+├── .github/
+│   └── workflows/
+│       └── deploy.yml     # CI/CD: build & deploy to Cloudflare Workers
 ├── src/
 │   ├── components/
-│   │   ├── react/     # Interactive React components (Islands)
-│   │   └── ui/        # shadcn/ui base components
-│   ├── content/       # Markdown data (Events, Team, Blog)
-│   ├── layouts/       # Base Astro layouts
-│   └── pages/         # Route definitions
-├── public/            # Static assets (images, fonts)
-├── scripts/           # Build-time utilities (e.g., blog fetching)
-├── astro.config.mjs   # Astro configuration
-└── blog.config.mjs    # Blog sync settings
+│   │   ├── react/         # Interactive React components (Islands)
+│   │   └── ui/            # shadcn/ui base components
+│   ├── content/           # Markdown data (fetched at build time)
+│   │   ├── blog/          # ← populated from aisoc-website-content/blog/
+│   │   ├── events/        # ← populated from aisoc-website-content/events/
+│   │   └── team/          # ← populated from aisoc-website-content/team/
+│   ├── layouts/           # Base Astro layouts
+│   └── pages/             # Route definitions
+├── public/                # Static assets (images, fonts)
+├── scripts/
+│   └── fetch-content.mjs  # Prebuild script: clones & syncs content repo
+├── astro.config.mjs       # Astro configuration
+└── content.config.mjs     # External content repo settings
 ```
 
-## 📝 Content Management
+## Content Management
 
-The site uses **Astro Content Collections** for type-safe data management.
+All content is managed in the separate [`aisoc-website-content`](https://github.com/NUSAISoc/aisoc-website-content) repository. **Do not add content files directly to this repo** — they are ignored by `.gitignore` and will be overwritten on the next build.
 
-- **Events**: Add/edit `.md` files in `src/content/events/`.
-- **Team**: Add/edit `.md` files in `src/content/team/`.
-- **Blog**:
-    - Posts are managed in `src/content/blog/`.
-    - Can be synced from an external GitHub repo by configuring `blog.config.mjs` and running `npm run build`.
+The `scripts/fetch-content.mjs` prebuild script clones that repo and syncs the content into `src/content/` before Astro builds the site. Files with a `_template-` filename prefix are skipped and never rendered.
 
-## 🎨 Design Philosophy: Graphic Realism
+To add content, follow the instructions in the `aisoc-website-content` repository's `README.md`.
 
-AISOC avoids generic sci-fi tropes. Our identity is built on:
+## Deployment
 
-- **Clinical Acid Palette**: Void Black (#080808), Clinical White (#F2F2F2), and Marathon Green (#CCFF00).
-- **Mathematical Primitives**: Using tensors, loss landscapes, and activation functions as visual elements.
-- **Typography**: [Tomorrow](https://fonts.google.com/specimen/Tomorrow) for headers and [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) for data/body.
+The site is deployed to **Cloudflare Workers** via the `.github/workflows/deploy.yml` GitHub Actions workflow. A build and deploy is triggered automatically when:
+
+- A commit is pushed to `main` in this repository.
+- The `aisoc-website-content` repo pushes content changes to its `main` branch (which fires a `repository_dispatch` event to this repo).
+
+### Required GitHub Secrets
+
+Configure the following secrets on this repository for deployments to work:
+
+| Secret                  | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with Workers deploy permissions |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID                           |
 
 ---
 
-Built with ⚡ by [@itsvari](https://github.com/itsvari) for the **NUS SoC AI Society**.
+Built by [@itsvari](https://github.com/itsvari) for the **NUS SoC AI Society**.
