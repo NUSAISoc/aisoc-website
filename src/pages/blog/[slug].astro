@@ -5,7 +5,7 @@ import { calculateReadingTime, formatDate } from "@/lib/formatting";
 import { IconArrowLeft, IconUser, IconCalendar, IconClock } from "@tabler/icons-react";
 
 export async function getStaticPaths() {
-    const blogEntries = await getCollection("blog");
+    const blogEntries = await getCollection("blog", ({ id }) => !id.startsWith("_template-"));
     return blogEntries.map((entry) => ({
         params: { slug: entry.slug },
         props: { entry },

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { SOCIAL_LINKS } from "@/lib/socialLinks";
 import BentoCard from "@/components/BentoCard.astro";
 import InitiativeCard from "@/components/InitiativeCard.astro";
 import LinkCard from "@/components/LinkCard.astro";
@@ -20,7 +21,7 @@ import {
 } from "@tabler/icons-react";
 
 // Get next upcoming event
-const allEvents = await getCollection("events");
+const allEvents = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
 const now = new Date();
 const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
@@ -217,7 +218,7 @@ const formatDate = (date: Date) => {
 
                 <!-- Telegram Main (Large) -->
                 <LinkCard
-                    href="https://t.me/+iOXKIVLSYcw5OTA1"
+                    href={SOCIAL_LINKS.telegramDiscussion.href}
                     target="_blank"
                     variant="large"
                     icon={IconSend}
@@ -227,7 +228,7 @@ const formatDate = (date: Date) => {
 
                 <!-- Telegram Alerts (Large) -->
                 <LinkCard
-                    href="https://t.me/nusaisociety"
+                    href={SOCIAL_LINKS.telegramAlerts.href}
                     target="_blank"
                     variant="large"
                     icon={IconSend}
@@ -237,7 +238,7 @@ const formatDate = (date: Date) => {
 
                 <!-- Discord (Large) -->
                 <LinkCard
-                    href="https://discord.com/invite/yazkAEsjww"
+                    href={SOCIAL_LINKS.discord.href}
                     target="_blank"
                     variant="large"
                     icon={IconMessageCircle}
@@ -249,31 +250,21 @@ const formatDate = (date: Date) => {
                 />
 
                 <!-- LinkedIn -->
-                <LinkCard
-                    href="https://www.linkedin.com/company/nus-computing-ai-society/"
-                    target="_blank"
-                    icon={IconBrandLinkedin}
-                    title="LinkedIn"
-                />
+                <LinkCard href={SOCIAL_LINKS.linkedin.href} target="_blank" icon={IconBrandLinkedin} title="LinkedIn" />
 
                 <!-- X (Twitter) -->
                 <LinkCard
-                    href="https://x.com/socaisociety"
+                    href={SOCIAL_LINKS.twitter.href}
                     target="_blank"
                     icon={IconBrandTwitter}
                     title="X / Twitter"
                 />
 
                 <!-- Email -->
-                <LinkCard href="mailto:contact@nusaisociety.org" icon={IconMail} title="Email" />
+                <LinkCard href={SOCIAL_LINKS.email.href} icon={IconMail} title="Email" />
 
                 <!-- Hugging Face -->
-                <LinkCard
-                    href="https://huggingface.co/socaisociety"
-                    target="_blank"
-                    icon={IconRobot}
-                    title="Hugging Face"
-                />
+                <LinkCard href={SOCIAL_LINKS.huggingFace.href} target="_blank" icon={IconRobot} title="Hugging Face" />
             </div>
         </main>
     </div>

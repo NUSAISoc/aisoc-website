@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { IconArrowLeft, IconCalendar, IconClock, IconMapPin } from "@tabler/icons-react";
 
 export async function getStaticPaths() {
-    const eventEntries = await getCollection("events");
+    const eventEntries = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
     return eventEntries.map((entry) => ({
         params: { slug: entry.slug },
         props: { entry },

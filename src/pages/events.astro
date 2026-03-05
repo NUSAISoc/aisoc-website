@@ -3,7 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import EventCard from "@/components/EventCard.astro";
 import { getCollection } from "astro:content";
 
-const allEvents = await getCollection("events");
+const allEvents = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
 
 // Sort upcoming events: Nearest future date first
 const upcomingEvents = allEvents

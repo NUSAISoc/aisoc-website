@@ -2,6 +2,12 @@
 dist/
 # generated types
 .astro/
+.temp-content/
+
+# fetched content
+src/content/blog/
+src/content/events/
+src/content/team/
 
 # dependencies
 node_modules/
