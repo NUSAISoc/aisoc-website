@@ -6,5 +6,9 @@
     "directory": "./dist",
     // serves src/pages/404.astro for unmatched routes
     "not_found_handling": "404-page"
+  },
+  "routes": {
+    "pattern": "nusaisociety.org",
+    "custom_domain": true
   }
 }
