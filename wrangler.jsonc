@@ -1,4 +1,5 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "aisoc-website",
   // https://developers.cloudflare.com/workers/configuration/compatibility-dates/
   "compatibility_date": "2026-03-06",
@@ -12,5 +13,6 @@
       "pattern": "nusaisociety.org",
       "custom_domain": true
     }
-  ]
+  ],
+  "workers_dev": true,
 }
