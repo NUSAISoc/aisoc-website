@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "scripts": {
         "prebuild": "node scripts/fetch-content.mjs",
+        "predev": "node scripts/fetch-content.mjs",
         "dev": "astro dev",
         "build": "astro build",
         "preview": "astro preview",

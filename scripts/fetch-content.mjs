@@ -77,4 +77,8 @@ async function fetchContent() {
   }
 }
 
-fetchContent();
+fetchContent().then(() => {
+  import('./process-images.mjs').catch(err => {
+    console.error('[Content Fetch] Failed to process images:', err);
+  });
+});
