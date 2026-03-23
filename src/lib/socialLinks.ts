@@ -32,7 +32,7 @@ export const SOCIAL_LINKS = {
     label: "X / Twitter",
   },
   email: {
-    href: "mailto:contact@nusaisociety.org",
+    href: "mailto:outreach@nusaisociety.org",
     label: "Email",
   },
   huggingFace: {
