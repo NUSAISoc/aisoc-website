@@ -24,7 +24,7 @@ export const SOCIAL_LINKS = {
     label: "LinkedIn",
   },
   github: {
-    href: "https://github.com/nus-soc-aisoc",
+    href: "https://github.com/NUSAISoc",
     label: "GitHub",
   },
   twitter: {
