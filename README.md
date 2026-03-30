@@ -6,7 +6,7 @@ The official website for the National University of Singapore (NUS) School of Co
 
 ## Tech Stack
 
-- **Framework**: [Astro](https://astro.build/) (Static Site Generation)
+- **Framework**: [Astro 6](https://astro.build/) (Static Site Generation with Content Layer API)
 - **UI Components**: [React](https://reactjs.org/) + [shadcn/ui](https://ui.shadcn.com/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Mathematics**: [KaTeX](https://katex.org/) (via `remark-math` and `rehype-katex`)
@@ -14,9 +14,9 @@ The official website for the National University of Singapore (NUS) School of Co
 
 ## Features
 
-- **Events Subpage (`/events`)**: Display upcoming events for registration and an archive of past gatherings.
+- **Events Subpage (`/events`)**: Display upcoming events for registration and an archive of past gatherings. Supports timezone-aware event dates for accurate scheduling across timezones.
 - **Core Team Subpage (`/team`)**: Showcase the students and researchers driving AISOC forward.
-- **Blog Subpage (`/blog`)**: Technical articles on machine learning, engineering, and research.
+- **Blog Subpage (`/blog`)**: Technical articles on machine learning, engineering, and research with timezone-aware publication dates.
 - **Automated Content Pipeline**: Blog, event, and team content is fetched from [`aisoc-website-content`](https://github.com/NUSAISoc/aisoc-website-content) at build time and re-deployed automatically when that repo changes.
 
 ## Quick Start
@@ -53,15 +53,28 @@ npm run preview
 │   │   ├── events/        # ← populated from aisoc-website-content/events/
 │   │   └── team/          # ← populated from aisoc-website-content/team/
 │   ├── layouts/           # Base Astro layouts
-│   └── pages/             # Route definitions
+│   ├── pages/             # Route definitions
+│   ├── lib/               # Utility functions and helpers
+│   ├── scripts/           # Build-time scripts
+│   ├── styles/            # Global styles
+│   └── content.config.ts  # Content Layer schema definitions
 ├── public/                # Static assets (images, fonts)
 ├── scripts/
 │   └── fetch-content.mjs  # Prebuild script: clones & syncs content repo
 ├── astro.config.mjs       # Astro configuration
-└── content.config.mjs     # External content repo settings
+├── content.config.mjs     # External content source configuration (GitHub repo/local)
+└── package.json           # Project dependencies
 ```
 
 ## Content Management
+
+### Content Collections (Astro 6 Content Layer)
+
+This project uses Astro's Content Layer API with collections defined in `src/content.config.ts`:
+
+- **Events**: Support ISO8601 datetime strings with timezone offsets (e.g., `2026-03-30T10:00:00+08:00`) for accurate scheduling
+- **Blog**: Articles with timezone-aware publication dates
+- **Team**: Member profiles with optional social links
 
 All content is managed in the separate [`aisoc-website-content`](https://github.com/NUSAISoc/aisoc-website-content) repository. **Do not add content files directly to this repo** — they are ignored by `.gitignore` and will be overwritten on the next build.
 
@@ -83,7 +96,7 @@ Configure the following secrets on this repository for deployments to work:
 | Secret                  | Purpose                                              |
 | ----------------------- | ---------------------------------------------------- |
 | `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with Workers deploy permissions |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID                           |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID                                |
 
 ---
 
