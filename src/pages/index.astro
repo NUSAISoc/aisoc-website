@@ -5,6 +5,7 @@ import { SOCIAL_LINKS } from "@/lib/socialLinks";
 import BentoCard from "@/components/BentoCard.astro";
 import InitiativeCard from "@/components/InitiativeCard.astro";
 import LinkCard from "@/components/LinkCard.astro";
+import { formatEventTimeRange, getEventStartDate, isEventNow } from "@/lib/events";
 import {
     IconArrowRight,
     IconClock,
@@ -20,23 +21,44 @@ import {
     IconRobot,
 } from "@tabler/icons-react";
 
-// Get next upcoming event
+// Get featured event for homepage
 const allEvents = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
 const now = new Date();
 const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-const upcomingEvents = allEvents
-    .filter((event) => event.data.status === "upcoming" || new Date(event.data.date) >= now)
-    .sort((a, b) => new Date(a.data.date).getTime() - new Date(b.data.date).getTime());
+const currentEvents = allEvents
+    .filter((event) => isEventNow(event, now))
+    .sort((a, b) => {
+        const endA = typeof a.data.endDate === "string" ? new Date(a.data.endDate) : a.data.endDate;
+        const endB = typeof b.data.endDate === "string" ? new Date(b.data.endDate) : b.data.endDate;
+        return endA.getTime() - endB.getTime();
+    });
 
-const upcomingEvent = upcomingEvents[0];
-const nextEvent = upcomingEvent && new Date(upcomingEvent.data.date) <= oneWeekFromNow ? upcomingEvent : null;
+const nextWeekEvents = allEvents
+    .filter((event) => {
+        const startDate = getEventStartDate(event);
+        return startDate > now && startDate <= oneWeekFromNow;
+    })
+    .sort((a, b) => getEventStartDate(a).getTime() - getEventStartDate(b).getTime());
+
+const featuredEvent = currentEvents[0] ?? nextWeekEvents[0] ?? null;
+const featuredEventState = featuredEvent ? (isEventNow(featuredEvent, now) ? "now" : "upcoming") : null;
+const homepageEventsPayload = allEvents.map((event) => ({
+    id: event.id,
+    title: event.data.title,
+    startDate: typeof event.data.startDate === "string" ? event.data.startDate : event.data.startDate.toISOString(),
+    endDate: typeof event.data.endDate === "string" ? event.data.endDate : event.data.endDate.toISOString(),
+    location: event.data.location,
+    image: event.data.image ?? "",
+    description: event.data.description ?? "",
+}));
 
 const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-SG", {
         weekday: "short",
         day: "numeric",
         month: "short",
+        timeZone: "Asia/Singapore",
     }).format(date);
 };
 ---
@@ -49,104 +71,137 @@ const formatDate = (date: Date) => {
         <main class="container mx-auto px-4 md:px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 auto-rows-min">
                 <!-- 1. Hero Section (Top Left - Large) -->
-                <BentoCard
-                    variant="hero"
-                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-125 flex flex-col justify-center p-8 md:p-12`}
+                <div
+                    id="home-hero-slot"
+                    class={`col-span-1 md:col-span-6 ${featuredEvent ? "lg:col-span-8" : "lg:col-span-12"}`}
                 >
-                    <!-- Background decoration: Grid + Radial -->
-                    <div
-                        class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[14px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
-                    >
-                    </div>
-
-                    <div class="space-y-8 z-10 max-w-3xl">
-                        <h1
-                            class="text-6xl md:text-7xl lg:text-8xl font-display font-black uppercase tracking-tighter leading-[0.9]"
+                    <BentoCard variant="hero" class="min-h-125 flex flex-col justify-center p-8 md:p-12">
+                        <!-- Background decoration: Grid + Radial -->
+                        <div
+                            class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[14px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
                         >
-                            NUS SoC<br />
-                            <span class="text-primary">AI SOCIETY</span>
-                        </h1>
-
-                        <p class="text-xl text-muted-foreground font-mono leading-relaxed max-w-xl">
-                            The Student Hub for AI Research & Engineering.
-                        </p>
-                        <div class="flex flex-wrap gap-8 pt-4">
-                            <a
-                                href="/events"
-                                class="inline-flex items-center text-lg font-mono uppercase tracking-widest text-primary hover:text-primary/80 transition-colors group/link cursor-pointer"
-                            >
-                                [ Explore Events ] <IconArrowRight
-                                    className="ml-2 h-5 w-5 group-hover/link:translate-x-1 transition-transform"
-                                />
-                            </a>
-                            <a
-                                href="/team"
-                                class="inline-flex items-center text-lg font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group/link cursor-pointer"
-                            >
-                                [ Meet The Team ] <IconArrowRight
-                                    className="-ml-5 h-5 w-5 opacity-0 group-hover/link:opacity-100 group-hover/link:ml-2 transition-all"
-                                />
-                            </a>
                         </div>
-                    </div>
-                </BentoCard>
 
-                <!-- 2. Next Event (Top Right - Medium) -->
+                        <div class="space-y-8 z-10 max-w-3xl">
+                            <h1
+                                class="text-6xl md:text-7xl lg:text-8xl font-display font-black uppercase tracking-tighter leading-[0.9]"
+                            >
+                                NUS SoC<br />
+                                <span class="text-primary">AI SOCIETY</span>
+                            </h1>
+
+                            <p class="text-xl text-muted-foreground font-mono leading-relaxed max-w-xl">
+                                The Student Hub for AI Research & Engineering.
+                            </p>
+                            <div class="flex flex-wrap gap-8 pt-4">
+                                <a
+                                    href="/events"
+                                    class="inline-flex items-center text-lg font-mono uppercase tracking-widest text-primary hover:text-primary/80 transition-colors group/link cursor-pointer"
+                                >
+                                    [ Explore Events ] <IconArrowRight
+                                        className="ml-2 h-5 w-5 group-hover/link:translate-x-1 transition-transform"
+                                    />
+                                </a>
+                                <a
+                                    href="/team"
+                                    class="inline-flex items-center text-lg font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group/link cursor-pointer"
+                                >
+                                    [ Meet The Team ] <IconArrowRight
+                                        className="-ml-5 h-5 w-5 opacity-0 group-hover/link:opacity-100 group-hover/link:ml-2 transition-all"
+                                    />
+                                </a>
+                            </div>
+                        </div>
+                    </BentoCard>
+                </div>
+
+                <!-- 2. Featured Event (Top Right - Medium) -->
                 {
-                    nextEvent && (
-                        <BentoCard variant="event" class="col-span-1 md:col-span-6 lg:col-span-4 flex flex-col">
-                            {nextEvent.data.image && (
-                                <div class="absolute inset-0 z-0">
+                    featuredEvent && (
+                        <div
+                            id="home-next-event-slot"
+                            class:list={["col-span-1 md:col-span-6 lg:col-span-4", !featuredEvent && "hidden"]}
+                        >
+                            <BentoCard variant="event" class="flex flex-col h-full">
+                                <div
+                                    id="home-next-event-image-wrap"
+                                    class:list={["absolute inset-0 z-0", !featuredEvent.data.image && "hidden"]}
+                                >
                                     <img
-                                        src={nextEvent.data.image}
-                                        alt={nextEvent.data.title}
+                                        id="home-next-event-image"
+                                        src={featuredEvent.data.image}
+                                        alt={featuredEvent.data.title}
                                         class="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
                                     />
                                     <div class="absolute inset-0 bg-linear-to-t from-background via-background/80 to-background/20" />
                                 </div>
-                            )}
-                            <div class="absolute top-0 right-0 z-20 bg-primary/20 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest backdrop-blur-sm border-l border-b border-primary/20">
-                                Next Up
-                            </div>
-                            <div class="p-8 flex flex-col h-full justify-between relative z-10">
-                                <div class="space-y-6">
-                                    <div class="space-y-2">
-                                        <p class="text-primary font-mono text-sm uppercase tracking-wide">
-                                            {formatDate(new Date(nextEvent.data.date))}
+                                <div
+                                    id="home-next-event-state"
+                                    class:list={[
+                                        "absolute top-0 right-0 z-20 px-3 py-1 font-mono text-xs uppercase tracking-widest backdrop-blur-sm border-l border-b",
+                                        featuredEventState === "now"
+                                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/30"
+                                            : "bg-primary/20 text-primary border-primary/20",
+                                    ]}
+                                >
+                                    {featuredEventState === "now" ? "NOW" : "NEXT UP"}
+                                </div>
+                                <div class="p-8 flex flex-col h-full justify-between relative z-10">
+                                    <div class="space-y-6">
+                                        <div class="space-y-2">
+                                            <p
+                                                id="home-next-event-date"
+                                                class="text-primary font-mono text-sm uppercase tracking-wide"
+                                            >
+                                                {formatDate(getEventStartDate(featuredEvent))}
+                                            </p>
+                                            <h3
+                                                id="home-next-event-title"
+                                                class="text-3xl font-display uppercase tracking-tight leading-none group-hover:text-primary transition-colors"
+                                            >
+                                                {featuredEvent.data.title}
+                                            </h3>
+                                        </div>
+
+                                        <div class="space-y-3 text-sm text-muted-foreground font-mono border-l-2 border-primary/20 pl-4">
+                                            <div class="flex items-center gap-3">
+                                                <IconClock className="h-4 w-4 text-primary" />
+                                                <span id="home-next-event-time">
+                                                    {formatEventTimeRange(
+                                                        getEventStartDate(featuredEvent),
+                                                        new Date(featuredEvent.data.endDate),
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <IconMapPin className="h-4 w-4 text-primary" />
+                                                <span id="home-next-event-location">{featuredEvent.data.location}</span>
+                                            </div>
+                                        </div>
+
+                                        <p
+                                            id="home-next-event-description"
+                                            class:list={[
+                                                "text-muted-foreground line-clamp-3 text-sm font-mono",
+                                                !featuredEvent.data.description && "hidden",
+                                            ]}
+                                        >
+                                            {featuredEvent.data.description}
                                         </p>
-                                        <h3 class="text-3xl font-display uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
-                                            {nextEvent.data.title}
-                                        </h3>
                                     </div>
 
-                                    <div class="space-y-3 text-sm text-muted-foreground font-mono border-l-2 border-primary/20 pl-4">
-                                        <div class="flex items-center gap-3">
-                                            <IconClock className="h-4 w-4 text-primary" />
-                                            <span>{nextEvent.data.time}</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <IconMapPin className="h-4 w-4 text-primary" />
-                                            <span>{nextEvent.data.location}</span>
-                                        </div>
+                                    <div class="mt-6 border-t border-border pt-4">
+                                        <a
+                                            id="home-next-event-link"
+                                            href={`/events/${featuredEvent.id}`}
+                                            class="inline-flex items-center text-sm font-mono text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
+                                        >
+                                            [ View Details ] <IconArrowRight className="ml-2 h-3 w-3" />
+                                        </a>
                                     </div>
-
-                                    {nextEvent.data.description && (
-                                        <p class="text-muted-foreground line-clamp-3 text-sm font-mono">
-                                            {nextEvent.data.description}
-                                        </p>
-                                    )}
                                 </div>
-
-                                <div class="mt-6 border-t border-border pt-4">
-                                    <a
-                                        href={`/events/${nextEvent.slug}`}
-                                        class="inline-flex items-center text-sm font-mono text-primary uppercase tracking-widest hover:translate-x-1 transition-transform"
-                                    >
-                                        [ View Details ] <IconArrowRight className="ml-2 h-3 w-3" />
-                                    </a>
-                                </div>
-                            </div>
-                        </BentoCard>
+                            </BentoCard>
+                        </div>
                     )
                 }
 
@@ -267,4 +322,11 @@ const formatDate = (date: Date) => {
             </div>
         </main>
     </div>
+
+    <script id="home-events-data" type="application/json" set:html={JSON.stringify(homepageEventsPayload)} />
+    <script>
+        import { initHomeNextEvent } from "@/scripts/home-next-event";
+
+        initHomeNextEvent();
+    </script>
 </BaseLayout>

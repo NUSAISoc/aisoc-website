@@ -1,21 +1,26 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { formatEventTimeRange, getEventStartDate, isEventPast, isEventNow } from "@/lib/events";
 import { format } from "date-fns";
 import { IconArrowLeft, IconCalendar, IconClock, IconMapPin } from "@tabler/icons-react";
 
 export async function getStaticPaths() {
     const eventEntries = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
     return eventEntries.map((entry) => ({
-        params: { slug: entry.slug },
+        params: { slug: entry.id },
         props: { entry },
     }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
-const dateObj = typeof entry.data.date === "string" ? new Date(entry.data.date) : entry.data.date;
-const isUpcoming = entry.data.status === "upcoming";
+const { Content } = await render(entry);
+const startDateObj = getEventStartDate(entry);
+const endDateObj = typeof entry.data.endDate === "string" ? new Date(entry.data.endDate) : entry.data.endDate;
+const isNow = isEventNow(entry);
+const isPast = isEventPast(entry);
+const stateLabel = isNow ? "NOW" : "UPCOMING";
+const timeRange = formatEventTimeRange(startDateObj, endDateObj);
 ---
 
 <BaseLayout title={entry.data.title}>
@@ -34,13 +39,13 @@ const isUpcoming = entry.data.status === "upcoming";
             <!-- Header -->
             <header class="space-y-6 mb-12 border-b border-border pb-8">
                 {
-                    isUpcoming && (
+                    !isPast && (
                         <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest">
                             <span class="relative flex h-2 w-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                             </span>
-                            UPCOMING
+                            {stateLabel}
                         </div>
                     )
                 }
@@ -54,11 +59,11 @@ const isUpcoming = entry.data.status === "upcoming";
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-mono text-muted-foreground pt-2">
                     <div class="flex items-center">
                         <IconCalendar className="mr-2 h-4 w-4 text-primary" />
-                        {format(dateObj, "EEEE, dd MMMM yyyy")}
+                        {format(startDateObj, "EEEE, dd MMMM yyyy")}
                     </div>
                     <div class="flex items-center">
                         <IconClock className="mr-2 h-4 w-4 text-primary" />
-                        {entry.data.time} SGT
+                        {timeRange}
                     </div>
                     <div class="flex items-center">
                         <IconMapPin className="mr-2 h-4 w-4 text-primary" />
@@ -102,7 +107,7 @@ const isUpcoming = entry.data.status === "upcoming";
 
                 <div class="flex gap-4">
                     {
-                        isUpcoming && entry.data.registrationUrl && (
+                        !isPast && entry.data.registrationUrl && (
                             <a
                                 href={entry.data.registrationUrl}
                                 target="_blank"

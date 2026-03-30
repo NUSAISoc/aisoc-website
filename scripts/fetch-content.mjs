@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import config from '../content.config.mjs';
 
 const CONTENT_TYPES = ['blog', 'events', 'team'];
@@ -31,8 +31,20 @@ async function fetchContent() {
         fs.rmSync(tempDir, { recursive: true, force: true });
       }
       
-      // Clone repo
-      execSync(`git clone --depth 1 --branch ${config.github.branch} https://github.com/${config.github.repo}.git ${tempDir}`, { stdio: 'inherit' });
+      // Clone repo using argument array to safely handle paths with spaces.
+      execFileSync(
+        'git',
+        [
+          'clone',
+          '--depth',
+          '1',
+          '--branch',
+          String(config.github.branch),
+          `https://github.com/${config.github.repo}.git`,
+          tempDir,
+        ],
+        { stdio: 'inherit' }
+      );
       
       // Process each content type
       CONTENT_TYPES.forEach(type => {

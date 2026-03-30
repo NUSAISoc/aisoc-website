@@ -23,7 +23,7 @@ interface TeamMemberCardProps {
       name: string
       role: string
       tagline: string
-      image: string
+      image?: string
       social?: {
         github?: string
         linkedin?: string

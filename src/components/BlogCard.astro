@@ -28,7 +28,7 @@ const dateObj = typeof date === "string" ? new Date(date) : date;
 const readingTime = post.body ? calculateReadingTime(post.body) : "3 min read";
 ---
 
-<a href={`/blog/${post.slug}`} class="block h-full no-underline">
+<a href={`/blog/${post.id}`} class="block h-full no-underline">
     <div
         class="h-full flex flex-col overflow-hidden border border-border bg-card hover:bg-muted/10 transition-all hover:border-primary/50 group pt-0 gap-0 rounded-xl text-card-foreground shadow-sm"
     >

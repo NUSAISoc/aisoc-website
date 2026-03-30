@@ -10,16 +10,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { formatEventTimeRange, getEventEndDate, getEventStartDate, isEventUpcoming } from "@/lib/events"
 
 interface EventCardProps {
   slug: string
   event: {
     data: {
       title: string
-      date: Date | string
-      time: string
+      startDate: Date | string
+      endDate: Date | string
       location: string
-      status: "upcoming" | "past"
       image?: string
       description?: string
     }
@@ -27,10 +27,12 @@ interface EventCardProps {
 }
 
 export function EventCard({ slug, event }: EventCardProps) {
-  const { title, date, time, location, status, image, description } = event.data
-  const dateObj = typeof date === 'string' ? new Date(date) : date
+  const { title, location, image, description } = event.data
+  const dateObj = getEventStartDate(event)
+  const endDateObj = getEventEndDate(event)
+  const timeRange = formatEventTimeRange(dateObj, endDateObj)
   
-  const isUpcoming = status === 'upcoming'
+  const isUpcoming = isEventUpcoming(event)
 
   return (
     <a href={`/events/${slug}`} className="block h-full no-underline">
@@ -112,7 +114,7 @@ export function EventCard({ slug, event }: EventCardProps) {
               </span>
               <span className="flex items-center">
                 <IconClock className="mr-1 h-3 w-3" />
-                {time}
+                {timeRange}
               </span>
             </div>
             <div className="flex items-center">
