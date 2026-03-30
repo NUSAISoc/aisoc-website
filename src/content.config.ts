@@ -1,39 +1,52 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 const eventsCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/events',
+  }),
   schema: z.object({
     title: z.string(),
-    date: z.string().datetime().or(z.date()), // React to both ISO string or Date object
+    date: z.string().datetime().or(z.date()),
     time: z.string(),
     location: z.string(),
     status: z.enum(['upcoming', 'past']),
-    description: z.string().optional(), // Description often in body, but can be frontmatter too. We use body in plan, but maybe brief is useful.
+    description: z.string().optional(),
     image: z.string().optional(),
-    registrationUrl: z.string().url().optional(),
+    registrationUrl: z.url().optional(),
   }),
 });
 
 const teamCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/team',
+  }),
   schema: z.object({
     name: z.string(),
     role: z.string(),
     tagline: z.string().max(100),
     image: z.string(),
     order: z.number(),
-    social: z.object({
-      github: z.string().url().optional(),
-      linkedin: z.string().url().optional(),
-      twitter: z.string().url().optional(),
-      website: z.string().url().optional(),
-      email: z.string().email().optional(),
-    }).optional(),
+    social: z
+      .object({
+        github: z.url().optional(),
+        linkedin: z.url().optional(),
+        twitter: z.url().optional(),
+        website: z.url().optional(),
+        email: z.email().optional(),
+      })
+      .optional(),
   }),
 });
 
 const blogCollection = defineCollection({
-  type: 'content',
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/blog',
+  }),
   schema: z.object({
     title: z.string(),
     author: z.string(),

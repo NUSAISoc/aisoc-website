@@ -39,7 +39,7 @@ const pastEvents = allEvents
                 upcomingEvents.length > 0 ? (
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {upcomingEvents.map((event) => (
-                            <EventCard slug={event.slug} event={event} />
+                            <EventCard slug={event.id} event={event} />
                         ))}
                     </div>
                 ) : (
@@ -61,7 +61,7 @@ const pastEvents = allEvents
                 pastEvents.length > 0 ? (
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {pastEvents.map((event) => (
-                            <EventCard slug={event.slug} event={event} />
+                            <EventCard slug={event.id} event={event} />
                         ))}
                     </div>
                 ) : (

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { format } from "date-fns";
 import { IconArrowLeft, IconCalendar, IconClock, IconMapPin } from "@tabler/icons-react";
@@ -7,13 +7,13 @@ import { IconArrowLeft, IconCalendar, IconClock, IconMapPin } from "@tabler/icon
 export async function getStaticPaths() {
     const eventEntries = await getCollection("events", ({ id }) => !id.startsWith("_template-"));
     return eventEntries.map((entry) => ({
-        params: { slug: entry.slug },
+        params: { slug: entry.id },
         props: { entry },
     }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const dateObj = typeof entry.data.date === "string" ? new Date(entry.data.date) : entry.data.date;
 const isUpcoming = entry.data.status === "upcoming";
 ---

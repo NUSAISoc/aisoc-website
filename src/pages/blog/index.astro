@@ -2,7 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-const allPosts = await getCollection("blog", ({ id }) => !id.startsWith("_template-"));
+const allPosts = await getCollection("blog", ({ id }) => !id.startsWith("_template-")).catch(() => []);
 const sortedPosts = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 // Extract unique tags
@@ -23,9 +23,7 @@ import { FilteredBlogList } from "@/components/react/FilteredBlogList";
             <h1 class="text-4xl md:text-5xl font-display font-bold tracking-tighter uppercase text-foreground">
                 Research Log
             </h1>
-            <p class="text-muted-foreground font-mono max-w-2xl">
-                Technical deep dives, tutorials, and insights.
-            </p>
+            <p class="text-muted-foreground font-mono max-w-2xl">Technical deep dives, tutorials, and insights.</p>
         </div>
 
         {/* Blog Content with Filtering */}

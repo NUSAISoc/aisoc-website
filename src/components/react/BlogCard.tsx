@@ -14,7 +14,7 @@ import { calculateReadingTime } from "@/lib/formatting"
 
 interface BlogCardProps {
   post: {
-    slug: string
+    id: string
     data: {
       title: string
       author: string
@@ -37,7 +37,7 @@ export function BlogCard({ post }: BlogCardProps) {
     : "3 min read" // fallback
 
   return (
-    <a href={`/blog/${post.slug}`} className="block h-full no-underline">
+    <a href={`/blog/${post.id}`} className="block h-full no-underline">
       <Card className="h-full flex flex-col overflow-hidden border-border bg-card hover:bg-muted/10 transition-all hover:border-primary/50 group pt-0 gap-0">
         {coverImage ? (
           <div className="aspect-2.5/1 w-full overflow-hidden border-b border-border bg-muted relative">
