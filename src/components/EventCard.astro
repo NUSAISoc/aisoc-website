@@ -34,7 +34,7 @@ const isUpcoming = status === "upcoming";
         <!-- Card Image / Placeholder -->
         <div
             class:list={[
-                "relative aspect-[2.5/1] w-full overflow-hidden border-b border-border",
+                "relative aspect-2.5/1 w-full overflow-hidden border-b border-border",
                 image ? "bg-muted" : "bg-muted/30",
             ]}
         >
@@ -46,7 +46,7 @@ const isUpcoming = status === "upcoming";
                             alt={title}
                             class="h-full w-full object-cover transition-all duration-500 group-hover:scale-105 opacity-50 grayscale group-hover:opacity-70 group-hover:grayscale-0"
                         />
-                        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+                        <div class="absolute inset-0 bg-linear-to-t from-background via-background/60 to-background/30" />
                     </Fragment>
                 ) : (
                     <EventCardPlaceholder date={dateObj} slug={slug} />
@@ -65,7 +65,7 @@ const isUpcoming = status === "upcoming";
         </div>
 
         <!-- Card Header -->
-        <div class="flex flex-col space-y-1.5 p-6 pt-4 space-y-2">
+        <div class="flex flex-col p-6 pt-4 space-y-2">
             <h3
                 class="font-display text-xl uppercase tracking-tight group-hover:text-primary transition-colors leading-tight"
             >
@@ -99,7 +99,7 @@ const isUpcoming = status === "upcoming";
         </div>
 
         <!-- Card Footer -->
-        <div class="flex items-center p-6 pt-0 border-t border-border pt-4 mt-auto">
+        <div class="flex items-center p-6 border-t border-border pt-4 mt-auto">
             <span
                 class="text-xs font-mono text-primary group-hover:translate-x-1 transition-transform inline-flex items-center"
             >

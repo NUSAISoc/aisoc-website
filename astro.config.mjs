@@ -33,6 +33,7 @@ export default defineConfig({
   },
 
   vite: {
+    // @ts-expect-error Vite plugin type mismatch due to duplicate Vite versions in deps
     plugins: [tailwindcss()],
     define: {
       // Still needed for client-side bundles processed by Vite

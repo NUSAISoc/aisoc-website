@@ -40,16 +40,16 @@ export function BlogCard({ post }: BlogCardProps) {
     <a href={`/blog/${post.slug}`} className="block h-full no-underline">
       <Card className="h-full flex flex-col overflow-hidden border-border bg-card hover:bg-muted/10 transition-all hover:border-primary/50 group pt-0 gap-0">
         {coverImage ? (
-          <div className="aspect-[2.5/1] w-full overflow-hidden border-b border-border bg-muted relative">
+          <div className="aspect-2.5/1 w-full overflow-hidden border-b border-border bg-muted relative">
             <img 
               src={coverImage} 
               alt={title} 
               className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105 opacity-50 grayscale group-hover:opacity-70 group-hover:grayscale-0"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+            <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-background/30" />
           </div>
         ) : (
-          <div className="aspect-[2.5/1] w-full overflow-hidden border-b border-border bg-gradient-to-br from-muted/50 via-background to-muted/30 relative">
+          <div className="aspect-2.5/1 w-full overflow-hidden border-b border-border bg-linear-to-br from-muted/50 via-background to-muted/30 relative">
             {/* Scan lines overlay */}
             <div className="absolute inset-0 opacity-10">
               <div className="h-full w-full" style={{

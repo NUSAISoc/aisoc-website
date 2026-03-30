@@ -36,13 +36,13 @@ export function EventCard({ slug, event }: EventCardProps) {
     <a href={`/events/${slug}`} className="block h-full no-underline">
       <Card className={`group cursor-pointer transition-all hover:border-primary/50 hover:bg-muted/10 h-full flex flex-col pt-0 gap-0 overflow-hidden ${isUpcoming ? 'border-primary/20' : 'border-border opacity-80 hover:opacity-100'}`}>
         {image ? (
-          <div className="relative aspect-[2.5/1] w-full overflow-hidden border-b border-border bg-muted">
+          <div className="relative aspect-2.5/1 w-full overflow-hidden border-b border-border bg-muted">
             <img 
               src={image} 
               alt={title} 
               className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105 opacity-50 grayscale group-hover:opacity-70 group-hover:grayscale-0"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+            <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-background/30" />
             
             {isUpcoming && (
               <div className="absolute top-2 right-2">
@@ -53,7 +53,7 @@ export function EventCard({ slug, event }: EventCardProps) {
             )}
           </div>
         ) : (
-          <div className="relative aspect-[2.5/1] w-full overflow-hidden border-b border-border bg-muted/30">
+          <div className="relative aspect-2.5/1 w-full overflow-hidden border-b border-border bg-muted/30">
             {/* Circuit grid pattern background */}
             <div className="absolute inset-0 opacity-20">
               <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">

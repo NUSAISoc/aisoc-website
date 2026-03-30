@@ -51,11 +51,11 @@ const formatDate = (date: Date) => {
                 <!-- 1. Hero Section (Top Left - Large) -->
                 <BentoCard
                     variant="hero"
-                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-[500px] flex flex-col justify-center p-8 md:p-12`}
+                    class={`col-span-1 md:col-span-6 ${nextEvent ? "lg:col-span-8" : "lg:col-span-12"} min-h-125 flex flex-col justify-center p-8 md:p-12`}
                 >
                     <!-- Background decoration: Grid + Radial -->
                     <div
-                        class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+                        class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[14px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
                     >
                     </div>
 
@@ -84,7 +84,7 @@ const formatDate = (date: Date) => {
                                 class="inline-flex items-center text-lg font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group/link cursor-pointer"
                             >
                                 [ Meet The Team ] <IconArrowRight
-                                    className="ml-2 h-5 w-5 opacity-0 -ml-5 group-hover/link:opacity-100 group-hover/link:ml-2 transition-all"
+                                    className="-ml-5 h-5 w-5 opacity-0 group-hover/link:opacity-100 group-hover/link:ml-2 transition-all"
                                 />
                             </a>
                         </div>
@@ -102,7 +102,7 @@ const formatDate = (date: Date) => {
                                         alt={nextEvent.data.title}
                                         class="w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
                                     />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
+                                    <div class="absolute inset-0 bg-linear-to-t from-background via-background/80 to-background/20" />
                                 </div>
                             )}
                             <div class="absolute top-0 right-0 z-20 bg-primary/20 text-primary px-3 py-1 font-mono text-xs uppercase tracking-widest backdrop-blur-sm border-l border-b border-primary/20">
@@ -152,7 +152,7 @@ const formatDate = (date: Date) => {
 
                 <!-- 3. Mission Statement (Full Width) -->
                 <BentoCard variant="mission" class="col-span-1 md:col-span-6 lg:col-span-12 p-8 md:p-12">
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <div
                             class="w-16 h-16 border-2 border-primary flex items-center justify-center rounded-full bg-primary/10"
                         >
