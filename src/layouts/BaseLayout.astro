@@ -1,5 +1,6 @@
 ---
 import Navigation from "@/components/Navigation.astro";
+import FlickeringGrid from "@/components/ui/flickering-grid";
 import "@/styles/global.css";
 import { SOCIAL_LINKS } from "@/lib/socialLinks";
 
@@ -28,10 +29,26 @@ const { title, description = "NUS SoC AI Society - From Theory to Deployment" } 
         <title>{title} | AISOC</title>
     </head>
     <body
-        class="min-h-screen bg-background font-mono antialiased selection:bg-primary selection:text-primary-foreground flex flex-col"
+        class="relative min-h-screen bg-background font-mono antialiased selection:bg-primary selection:text-primary-foreground flex flex-col"
     >
+        <div aria-hidden="true" class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <FlickeringGrid
+                client:load
+                squareSize={2}
+                gridGap={16}
+                flickerChance={0.22}
+                maxOpacity={1.00}
+                color="rgb(204, 255, 0)"
+                className="h-full w-full opacity-25"
+            />
+            <div
+                class="absolute inset-0 bg-[radial-gradient(52%_30%_at_50%_0%,rgba(204,255,0,0.048)_0%,rgba(204,255,0,0.022)_38%,rgba(204,255,0,0.008)_58%,transparent_72%)]"
+            >
+            </div>
+        </div>
+
         <!-- Top Status Bar (Brand Element) -->
-        <div class="status-bar hidden md:flex">
+        <div class="status-bar hidden md:flex relative z-10">
             <span>NUS_SOC_AI_SOCIETY</span>
             <span id="clock">00:00:00 SGT</span>
             <span>SEM_2_AY2526</span>
@@ -39,11 +56,23 @@ const { title, description = "NUS SoC AI Society - From Theory to Deployment" } 
 
         <Navigation />
 
-        <main class="flex-1 container mx-auto px-4 py-8 md:py-12">
-            <slot />
+        <main class="relative z-10 w-full px-3 sm:px-6 lg:px-10 py-8 md:py-12">
+            <div
+                class="relative container mx-auto border border-border bg-background/88 px-5 md:px-8 lg:px-10 py-8 md:py-12 shadow-[0_0_0_1px_rgba(242,242,242,0.025)_inset,0_28px_65px_-45px_rgba(0,0,0,0.9)]"
+            >
+                <div aria-hidden="true" class="pointer-events-none absolute inset-0 border border-white/5"></div>
+                <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/28 to-transparent"
+                >
+                </div>
+                <div class="relative z-10">
+                    <slot />
+                </div>
+            </div>
         </main>
 
-        <footer class="border-t border-border bg-card py-8 mt-auto">
+        <footer class="relative z-10 border-t border-border bg-card py-8 mt-auto">
             <div
                 class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs md:text-sm text-muted-foreground font-mono"
             >
