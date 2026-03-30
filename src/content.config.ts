@@ -9,10 +9,9 @@ const eventsCollection = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
-    date: z.string().datetime().or(z.date()),
-    time: z.string(),
+    startDate: z.string().datetime().or(z.date()),
+    endDate: z.string().datetime().or(z.date()),
     location: z.string(),
-    status: z.enum(['upcoming', 'past']),
     description: z.string().optional(),
     image: z.string().optional(),
     registrationUrl: z.url().optional(),
