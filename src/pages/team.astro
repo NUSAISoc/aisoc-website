@@ -2,12 +2,13 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { TeamMemberCard } from "@/components/react/TeamMemberCard";
 import { getCollection } from "astro:content";
+import { sortTeamMembers } from "@/lib/team";
 
-const teamMembers = await getCollection("team", ({ id }) => !id.startsWith("_template-"));
-const currentTeam = teamMembers
-    .filter((member) => !member.data.isPastMember)
-    .sort((a, b) => a.data.order - b.data.order);
-const pastTeam = teamMembers.filter((member) => member.data.isPastMember).sort((a, b) => a.data.order - b.data.order);
+const allMembers = await getCollection("team", ({ id }) => !id.startsWith("_template-"));
+
+const currentExco = sortTeamMembers(allMembers.filter((member) => member.data.category === "exco"));
+const currentMembers = sortTeamMembers(allMembers.filter((member) => member.data.category === "member"));
+const alumni = sortTeamMembers(allMembers.filter((member) => member.data.category === "alumni"));
 ---
 
 <BaseLayout title="Team">
@@ -20,32 +21,50 @@ const pastTeam = teamMembers.filter((member) => member.data.isPastMember).sort((
             <p class="text-muted-foreground font-mono max-w-2xl">The people behind AISOC.</p>
         </div>
 
-        {/* Current Team Grid */}
+        {/* Current Executive Committee */}
         <section>
             {
-                currentTeam.length > 0 ? (
+                currentExco.length > 0 ? (
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {currentTeam.map((member) => (
+                        {currentExco.map((member) => (
                             <TeamMemberCard client:load member={member} />
                         ))}
                     </div>
                 ) : (
-                    <div class="data-terminal text-center py-12 text-muted-foreground">[ NO_TEAM_MEMBERS_FOUND ]</div>
+                    <div class="data-terminal text-center py-12 text-muted-foreground">[ NO_EXCO_MEMBERS_FOUND ]</div>
                 )
             }
         </section>
 
-        {/* Past Team Section (hidden if empty) */}
+        {/* Current Members */}
         {
-            pastTeam.length > 0 && (
+            currentMembers.length > 0 && (
                 <section class="space-y-6 border-t border-border pt-8">
                     <div>
                         <h2 class="text-2xl md:text-3xl font-display font-bold tracking-tighter uppercase text-foreground">
-                            Past Exco Members
+                            Members
                         </h2>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {pastTeam.map((member) => (
+                        {currentMembers.map((member) => (
+                            <TeamMemberCard client:load member={member} />
+                        ))}
+                    </div>
+                </section>
+            )
+        }
+
+        {/* Alumni (Past Exco + Past Members) */}
+        {
+            alumni.length > 0 && (
+                <section class="space-y-6 border-t border-border pt-8">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold tracking-tighter uppercase text-foreground">
+                            Alumni
+                        </h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {alumni.map((member) => (
                             <TeamMemberCard client:load member={member} />
                         ))}
                     </div>

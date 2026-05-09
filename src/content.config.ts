@@ -28,8 +28,7 @@ const teamCollection = defineCollection({
     role: z.string(),
     tagline: z.string().max(100),
     image: z.string().optional(),
-    order: z.number(),
-    isPastMember: z.boolean().optional().default(false),
+    category: z.enum(['exco', 'member', 'alumni']),
     social: z
       .object({
         github: z.url().optional(),
