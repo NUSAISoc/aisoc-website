@@ -1,5 +1,23 @@
 import * as React from "react"
-import { IconBrandGithub, IconBrandLinkedin, IconWorld, IconMail, IconBrandTwitter } from "@tabler/icons-react"
+import type { CollectionEntry } from "astro:content"
+import {
+  IconBrandBluesky,
+  IconBrandDiscord,
+  IconBrandFacebook,
+  IconBrandGithub,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandReddit,
+  IconBrandTelegram,
+  IconBrandThreads,
+  IconBrandTiktok,
+  IconBrandTwitter,
+  IconBrandYoutube,
+  IconBrandMedium,
+  IconMail,
+  IconRobot,
+  IconWorld,
+} from "@tabler/icons-react"
 
 import {
   Card,
@@ -17,27 +35,121 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
-interface TeamMemberCardProps {
-  member: {
-    data: {
-      name: string
-      role: string
-      tagline: string
-      image?: string
-      social?: {
-        github?: string
-        linkedin?: string
-        twitter?: string
-        website?: string
-        email?: string
-      }
-    }
-    body?: string
+type TeamMember = CollectionEntry<"team">
+type TeamMemberSocial = NonNullable<TeamMember["data"]["social"]>
+type SocialPlatformKey = Exclude<keyof TeamMemberSocial, "links">
+type SocialIcon = React.ComponentType<{ className?: string }>
+
+interface SocialLink {
+  label: string
+  href: string
+  icon: SocialIcon
+  external: boolean
+}
+
+interface SocialPlatformDefinition {
+  key: SocialPlatformKey
+  label: string
+  icon: SocialIcon
+  external?: boolean
+  formatHref?: (value: string) => string
+}
+
+const SOCIAL_PLATFORMS = [
+  { key: "github", label: "GitHub", icon: IconBrandGithub },
+  { key: "linkedin", label: "LinkedIn", icon: IconBrandLinkedin },
+  { key: "twitter", label: "Twitter", icon: IconBrandTwitter },
+  { key: "instagram", label: "Instagram", icon: IconBrandInstagram },
+  { key: "telegram", label: "Telegram", icon: IconBrandTelegram },
+  { key: "discord", label: "Discord", icon: IconBrandDiscord },
+  { key: "youtube", label: "YouTube", icon: IconBrandYoutube },
+  { key: "bluesky", label: "Bluesky", icon: IconBrandBluesky },
+  { key: "tiktok", label: "TikTok", icon: IconBrandTiktok },
+  { key: "threads", label: "Threads", icon: IconBrandThreads },
+  { key: "medium", label: "Medium", icon: IconBrandMedium },
+  { key: "reddit", label: "Reddit", icon: IconBrandReddit },
+  { key: "facebook", label: "Facebook", icon: IconBrandFacebook },
+  { key: "huggingFace", label: "Hugging Face", icon: IconRobot },
+  { key: "website", label: "Website", icon: IconWorld },
+  {
+    key: "email",
+    label: "Email",
+    icon: IconMail,
+    external: false,
+    formatHref: (value) => `mailto:${value}`,
+  },
+] satisfies readonly SocialPlatformDefinition[]
+
+function getSocialLinks(social?: TeamMemberSocial): SocialLink[] {
+  if (!social) {
+    return []
   }
+
+  const platformLinks = SOCIAL_PLATFORMS.flatMap((platform) => {
+    const value = social[platform.key]
+
+    if (typeof value !== "string" || value.length === 0) {
+      return []
+    }
+
+    return [{
+      label: platform.label,
+      href: platform.formatHref?.(value) ?? value,
+      icon: platform.icon,
+      external: platform.external ?? true,
+    }]
+  })
+
+  const customLinks = (social.links ?? []).map((link) => ({
+    label: link.label,
+    href: link.href,
+    icon: IconWorld,
+    external: true,
+  }))
+
+  return [...platformLinks, ...customLinks]
+}
+
+interface TeamMemberCardProps {
+  member: TeamMember
+}
+
+interface SocialLinkButtonProps {
+  link: SocialLink
+  inDialog?: boolean
+}
+
+function SocialLinkButton({ link, inDialog = false }: SocialLinkButtonProps) {
+  const Icon = link.icon
+
+  return (
+    <Button
+      asChild
+      variant="ghost"
+      size={inDialog ? "sm" : "icon"}
+      className={inDialog
+        ? "w-full min-w-9 hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9"
+        : "h-8 w-8 hover:text-primary hover:bg-transparent"}
+    >
+      <a
+        href={link.href}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noopener noreferrer" : undefined}
+        aria-label={link.label}
+        title={link.label}
+        onClick={(event) => event.stopPropagation()}
+        className="flex items-center justify-center"
+      >
+        <Icon className="h-4 w-4" />
+        <span className="sr-only">{link.label}</span>
+      </a>
+    </Button>
+  )
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
   const { name, role, tagline, image, social } = member.data
+  const socialLinks = getSocialLinks(social)
 
   return (
     <Dialog>
@@ -64,42 +176,10 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
               "{tagline}"
             </p>
             
-            <div className="pt-4 flex justify-center gap-2" onClick={(e) => e.stopPropagation()}>
-              {social?.github && (
-                <a href={social.github} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <IconBrandGithub className="h-4 w-4" />
-                  </Button>
-                </a>
-              )}
-              {social?.linkedin && (
-                <a href={social.linkedin} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <IconBrandLinkedin className="h-4 w-4" />
-                  </Button>
-                </a>
-              )}
-              {social?.twitter && (
-                <a href={social.twitter} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <IconBrandTwitter className="h-4 w-4" />
-                  </Button>
-                </a>
-              )}
-              {social?.website && (
-                <a href={social.website} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <IconWorld className="h-4 w-4" />
-                  </Button>
-                </a>
-              )}
-              {social?.email && (
-                <a href={`mailto:${social.email}`}>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary hover:bg-transparent">
-                    <IconMail className="h-4 w-4" />
-                  </Button>
-                </a>
-              )}
+            <div className="pt-4 flex flex-wrap justify-center gap-2">
+              {socialLinks.map((link) => (
+                <SocialLinkButton key={`${link.label}-${link.href}`} link={link} />
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -130,41 +210,9 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
           </div>
 
           <div className="grid grid-cols-4 gap-2 pt-2 border-t border-border/50">
-            {social?.github && (
-               <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
-                 <a href={social.github} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <IconBrandGithub className="h-4 w-4" />
-                 </a>
-               </Button>
-            )}
-            {social?.linkedin && (
-               <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
-                 <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <IconBrandLinkedin className="h-4 w-4" />
-                 </a>
-               </Button>
-            )}
-            {social?.twitter && (
-               <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
-                 <a href={social.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <IconBrandTwitter className="h-4 w-4" />
-                 </a>
-               </Button>
-            )}
-            {social?.website && (
-               <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
-                 <a href={social.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                   <IconWorld className="h-4 w-4" />
-                 </a>
-               </Button>
-            )}
-            {social?.email && (
-               <Button asChild variant="ghost" size="sm" className="w-full hover:text-primary hover:bg-primary/10 rounded-none border-r border-border/50 last:border-0 p-0 h-9">
-                 <a href={`mailto:${social.email}`} className="flex items-center justify-center">
-                   <IconMail className="h-4 w-4" />
-                 </a>
-               </Button>
-            )}
+            {socialLinks.map((link) => (
+              <SocialLinkButton key={`${link.label}-${link.href}`} link={link} inDialog />
+            ))}
           </div>
         </div>
       </DialogContent>
