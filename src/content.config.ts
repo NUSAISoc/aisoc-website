@@ -18,6 +18,31 @@ const eventsCollection = defineCollection({
   }),
 });
 
+const teamSocialLinkSchema = z.object({
+  label: z.string().min(1),
+  href: z.url(),
+});
+
+const teamSocialSchema = z.object({
+  github: z.url().optional(),
+  linkedin: z.url().optional(),
+  twitter: z.url().optional(),
+  instagram: z.url().optional(),
+  telegram: z.url().optional(),
+  discord: z.url().optional(),
+  youtube: z.url().optional(),
+  bluesky: z.url().optional(),
+  tiktok: z.url().optional(),
+  threads: z.url().optional(),
+  medium: z.url().optional(),
+  reddit: z.url().optional(),
+  facebook: z.url().optional(),
+  huggingFace: z.url().optional(),
+  website: z.url().optional(),
+  email: z.email().optional(),
+  links: z.array(teamSocialLinkSchema).optional(),
+});
+
 const teamCollection = defineCollection({
   loader: glob({
     pattern: '**/*.md',
@@ -29,15 +54,7 @@ const teamCollection = defineCollection({
     tagline: z.string().max(100),
     image: z.string().optional(),
     category: z.enum(['exco', 'member', 'alumni']),
-    social: z
-      .object({
-        github: z.url().optional(),
-        linkedin: z.url().optional(),
-        twitter: z.url().optional(),
-        website: z.url().optional(),
-        email: z.email().optional(),
-      })
-      .optional(),
+    social: teamSocialSchema.optional(),
   }),
 });
 
