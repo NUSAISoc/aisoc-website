@@ -4,6 +4,9 @@ on:
     push:
         branches:
             - main
+    pull_request:
+        branches:
+            - main
     repository_dispatch:
         types:
             - content-update
@@ -27,13 +30,15 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Audit dependencies
+              run: npm audit --audit-level=low
+
             - name: Build
               run: npm run build
 
             - name: Deploy to Cloudflare Workers
-              uses: cloudflare/wrangler-action@v4.0.0
-              with:
-                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-                  accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: deploy
-                  wranglerVersion: "4"
+              if: github.event_name != 'pull_request'
+              run: npm exec -- wrangler deploy
+              env:
+                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
