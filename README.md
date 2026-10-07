@@ -6,7 +6,7 @@ The official website for the National University of Singapore (NUS) School of Co
 
 ## Tech Stack
 
-- **Framework**: [Astro 6](https://astro.build/) (Static Site Generation with Content Layer API)
+- **Framework**: [Astro 7](https://astro.build/) (Static Site Generation with Content Layer API)
 - **UI Components**: [React](https://reactjs.org/) + [shadcn/ui](https://ui.shadcn.com/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Mathematics**: [KaTeX](https://katex.org/) (via `remark-math` and `rehype-katex`)
@@ -36,6 +36,23 @@ npm run build
 # Preview production build locally
 npm run preview
 ```
+
+## Dependency maintenance
+
+Use Node.js 22.12 or newer and `npm ci` to install the locked dependency tree.
+Pull requests run a production build and `npm audit --audit-level=low` before merging.
+
+The `package.json` overrides select patched transitive dependencies that upstream
+packages still constrain to older releases:
+
+- `katex` uses the direct dependency's version for both maths plugins. Its CSS and
+  fonts are bundled locally from the same package.
+- `postcss-selector-parser` uses 7.1.6 for `@tailwindcss/typography`, which pins
+  vulnerable 6.0.10.
+- `sharp` uses 0.35.5 throughout the tree, including Miniflare's older pinned copy.
+
+Review these overrides when upgrading their parent packages. Check the complete
+tree with `npm audit`, including development dependencies.
 
 ## Project Structure
 
@@ -68,7 +85,7 @@ npm run preview
 
 ## Content Management
 
-### Content Collections (Astro 6 Content Layer)
+### Content Collections (Astro Content Layer)
 
 This project uses Astro's Content Layer API with collections defined in `src/content.config.ts`:
 
