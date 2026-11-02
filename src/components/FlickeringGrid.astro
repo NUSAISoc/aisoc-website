@@ -1,0 +1,65 @@
+<canvas id="flickering-grid" class="fixed inset-0 h-screen w-screen opacity-25"></canvas>
+
+<script>
+    const canvas = document.querySelector<HTMLCanvasElement>("#flickering-grid");
+    const context = canvas?.getContext("2d");
+
+    if (canvas && context) {
+        const squareSizePx = 2;
+        const gridSpacingPx = 18;
+        const updatesPerSecond = 10;
+        const flickerChancePerSecond = 0.22;
+        const resizeDelayMs = 150;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let columns = 0;
+        let rows = 0;
+        let animationTimer: number | undefined;
+        let resizeTimer: number | undefined;
+
+        function drawSquare(column: number, row: number) {
+            const xPx = column * gridSpacingPx;
+            const yPx = row * gridSpacingPx;
+            context.clearRect(xPx, yPx, squareSizePx, squareSizePx);
+            context.globalAlpha = Math.random();
+            context.fillRect(xPx, yPx, squareSizePx, squareSizePx);
+        }
+
+        function resizeGrid() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.ceil(canvas.width / gridSpacingPx);
+            rows = Math.ceil(canvas.height / gridSpacingPx);
+            context.fillStyle = "rgb(204, 255, 0)";
+
+            for (let column = 0; column < columns; column++) {
+                for (let row = 0; row < rows; row++) {
+                    drawSquare(column, row);
+                }
+            }
+        }
+
+        function flickerSquares() {
+            const changes = Math.round(columns * rows * flickerChancePerSecond / updatesPerSecond);
+            for (let index = 0; index < changes; index++) {
+                drawSquare(Math.floor(Math.random() * columns), Math.floor(Math.random() * rows));
+            }
+        }
+
+        function updateAnimation() {
+            window.clearInterval(animationTimer);
+            animationTimer = undefined;
+            if (!document.hidden && !reducedMotion.matches) {
+                animationTimer = window.setInterval(flickerSquares, 1000 / updatesPerSecond);
+            }
+        }
+
+        resizeGrid();
+        updateAnimation();
+        document.addEventListener("visibilitychange", updateAnimation);
+        reducedMotion.addEventListener("change", updateAnimation);
+        window.addEventListener("resize", () => {
+            window.clearTimeout(resizeTimer);
+            resizeTimer = window.setTimeout(resizeGrid, resizeDelayMs);
+        });
+    }
+</script>

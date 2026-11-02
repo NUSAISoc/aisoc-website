@@ -1,6 +1,6 @@
 ---
 import Navigation from "@/components/Navigation.astro";
-import FlickeringGrid from "@/components/ui/flickering-grid";
+import FlickeringGrid from "@/components/FlickeringGrid.astro";
 import "@/styles/global.css";
 import "katex/dist/katex.min.css";
 import { SOCIAL_LINKS } from "@/lib/socialLinks";
@@ -25,15 +25,7 @@ const { title, description = "NUS SoC AI Society - From Theory to Deployment" } 
     </head>
     <body class="relative min-h-screen bg-background font-mono antialiased selection:bg-primary selection:text-primary-foreground flex flex-col">
         <div aria-hidden="true" class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            <FlickeringGrid
-                client:load
-                squareSize={2}
-                gridGap={16}
-                flickerChance={0.22}
-                maxOpacity={1.0}
-                color="rgb(204, 255, 0)"
-                className="h-full w-full opacity-25"
-            />
+            <FlickeringGrid />
             <div class="absolute inset-0 bg-[radial-gradient(52%_30%_at_50%_0%,rgba(204,255,0,0.048)_0%,rgba(204,255,0,0.022)_38%,rgba(204,255,0,0.008)_58%,transparent_72%)]"></div>
         </div>
 
